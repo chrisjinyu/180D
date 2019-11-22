@@ -1,6 +1,7 @@
 import bluetooth
 import time
 import RPi.GPIO as GPIO
+SLEEP_TIME = 0.1
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -43,10 +44,10 @@ while True:
 	while True:
 		print('ON')
 		GPIO.output(18, GPIO.HIGH)
-		time.sleep(1)
+		time.sleep(SLEEP_TIME)
 		print('OFF')
 		GPIO.output(18, GPIO.LOW)
-		time.sleep(1)
+		time.sleep(SLEEP_TIME)
         
     finally:
         # Clean up the connection
