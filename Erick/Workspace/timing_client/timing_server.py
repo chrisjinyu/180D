@@ -42,10 +42,10 @@ while 1:	#Wait for a connection
 		print('out')
 
 		while True:
-			print('ON')
+#			print('ON')
 			GPIO.output(18, GPIO.HIGH)
 			time.sleep(SLEEP_TIME)
-			print('OFF')
+#			print('OFF')
 			GPIO.output(18, GPIO.LOW)
 			time.sleep(SLEEP_TIME)
 
