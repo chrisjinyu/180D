@@ -20,12 +20,13 @@ while 1:	#Wait for a connection
 	GPIO.output(18,GPIO.HIGH)
 	try:
 		# Receive the data         
-		data = connection.recv(1024)
+		data = (connection.recv(1024).decode("utf-8"))
 		print(data)
 		current = time.time()
 		#print(current)
 		
 		parsed = data.split(',')
+		#parsed = parsed.decode('utf-8')
 		diff = float(parsed[1])
 		expected_time = float(parsed[0])
 		#print(diff)
@@ -38,7 +39,7 @@ while 1:	#Wait for a connection
 			#print(final)
 			#time.sleep(1)
 			final = time.time() - latency
-			print('out')
+		print('out')
 
 		while True:
 			print('ON')
