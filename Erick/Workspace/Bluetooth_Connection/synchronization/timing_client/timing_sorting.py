@@ -32,7 +32,7 @@ sortedData = []
 port = 1
 
 # Give the location of the file 
-loc = ("/home/pi/Desktop/timing/sample_data.xlsx") 
+loc = ("/home/pi/Desktop/180D/Erick/Workspace/Bluetooth_Connection/synchronization/timing_client/test_data.xlsx") 
   
 # To open Workbook 
 wb = xlrd.open_workbook(loc) 
@@ -71,54 +71,54 @@ def sort():
                             
                             
 def cycleConnections():
-	for i in range(0,len(sortedData)):
-		#Connect to bluetooth device
+    for i in range(0,len(sortedData)):
+        #Connect to bluetooth device
                 con = 0
                 while con == 0:
-                	#attempts to connect at all times with the BT address                  
-                	try:  
-			#connects to next device depending on button
-				connection(sortedData[i])                       
-		                con = 1
+                    #attempts to connect at all times with the BT address                  
+                    try:  
+            #connects to next device depending on button
+                connection(sortedData[i])                       
+                        con = 1
                         except:
-                        	#dummy variable for now
-                         	a = 1
+                            #dummy variable for now
+                            a = 1
 
 def connection(socket_data):
-	global latency
-	decode = 'a'
+    global latency
+    decode = 'a'
 
-	#grabs data
-	name    = socket_data['name']
-	row     = socket_data['row']
-	col     = socket_data['column']
-	bd_addr = socket_data['address']
+    #grabs data
+    name    = socket_data['name']
+    row     = socket_data['row']
+    col     = socket_data['column']
+    bd_addr = socket_data['address']
 
-	#sets up bluetooth socket
-	sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
-	sock.connect((bd_addr, port))
-	# the first connections latency is used for all
-	if (row == 1.0 and col == 1.0):
-		decode = 'i'
-	#uses the first connections latency for remaining devices
-	else:
-		decode = 'l'
-	sys_time = time.time()
-	print ('connection made with ' +name)
+    #sets up bluetooth socket
+    sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
+    sock.connect((bd_addr, port))
+    # the first connections latency is used for all
+    if (row == 1.0 and col == 1.0):
+        decode = 'i'
+    #uses the first connections latency for remaining devices
+    else:
+        decode = 'l'
+    sys_time = time.time()
+    print ('connection made with ' +name)
 
-	#timing information packet after connection is made
-	#print(str(latency))
-	packet = decode + ',' +str(execute_time)+','+str(sys_time)+','+str(latency)
-	#print (packet)
+    #timing information packet after connection is made
+    #print(str(latency))
+    packet = decode + ',' +str(execute_time)+','+str(sys_time)+','+str(latency)
+    #print (packet)
 
-	sock.sendall(packet)
+    sock.sendall(packet)
 
-	#retrieves latency for first connection
-	data  = (sock.recv(1024))
-	
-	latency = float(data)
+    #retrieves latency for first connection
+    data  = (sock.recv(1024))
+    
+    latency = float(data)
 
-	sock.close()
+    sock.close()
     
     
                             
