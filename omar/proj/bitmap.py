@@ -493,7 +493,9 @@ msg = "UCLA!"
 win_width = 12
 time_delay = 0.05
 
-'''
+
+outputMsgToFileHorizontally("UCLA", 12, charDict56)
+
 main(msg, 6, win_width, time_delay)
 main(msg, 5, win_width, time_delay)
 
@@ -501,7 +503,7 @@ main(msg, 6, win_width, time_delay, 0)
 main(msg, 5, win_width, time_delay, 0)
 main(msg, 4, win_width, time_delay)
 main(msg, 3, win_width, time_delay)
-'''
+
 
 
 '''
@@ -511,7 +513,7 @@ for i in range(3,6):
 '''
 
 
-
+'''
 for ch in charDict35:
 	msgOutputter(ch, charDict35, 3)
 	print()
@@ -530,4 +532,4 @@ msgOutputter('I ~ U', charDict65, 6)
 print()
 msgOutputter('I ~ U', charDict56, 5, 6)
 print("=========")
-
+'''
