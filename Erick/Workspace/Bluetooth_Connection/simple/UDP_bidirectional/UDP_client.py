@@ -1,0 +1,32 @@
+import bluetooth
+import time
+
+bd_addr = 'B8:27:EB:45:F6:AC'
+
+port = 1
+server_address = (bd_addr, port)
+
+sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
+sock.connect(server_address)
+
+try:
+
+    # Send data
+    message = b'This is our message. It is very long but will only be transmitted in chunks of 16 at a time'
+    print('sending {!r}'.format(message))
+    sock.sendall(message)
+
+    # Look for the response
+    amount_received = 0
+    amount_expected = len(message)
+
+    while amount_received < amount_expected:
+        data = sock.recv(16)
+        amount_received += len(data)
+        print('received {!r}'.format(data))
+
+finally:
+    print('closing socket')
+    sock.close()
+
+
