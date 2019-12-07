@@ -56,12 +56,12 @@ while 1:	#Wait for a connection
 				
 		for i in range(len(seq)-1):
 			print("seq[i]:" + str(seq[i]) + "\ti:" + str(i))
-			if int(seq[i]):
-				print("led on")
-				GPIO.output(18, GPIO.HIGH)
-			else:
-				print("led off")
+			if seq[i] == ' ':
+				print("led oFF")
 				GPIO.output(18, GPIO.LOW)
+			else:
+				print("led oN")
+				GPIO.output(18, GPIO.HIGH)
 			time.sleep(float(timeStep))
 			
 
