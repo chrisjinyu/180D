@@ -517,9 +517,10 @@ def omarMain(msg, dimension1, dimension2, sleepAmount = 0, HorizontalIfPossible 
 	#first decide which charDict is best
 	if dimension1 > dimension2:
 		length = dimension1
+		width = dimension2
 	else:
 		length = dimension2
-		
+		width = dimension1
 	#length = max(dimension1, dimension2)
 	#width = min(dimension1, dimension2)
 	
