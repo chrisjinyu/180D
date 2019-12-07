@@ -55,7 +55,7 @@ while 1:	#Wait for a connection
 		timeStep = seq[len(seq)-1]
 				
 		for i in range(len(seq)-1):
-			print("enter For")
+			print("seq[i]: " + str(seq[i]) + "  i: " + str(i))
 			if seq[i] == '1':
 				print("led on")
 				GPIO.output(18, GPIO.HIGH)
