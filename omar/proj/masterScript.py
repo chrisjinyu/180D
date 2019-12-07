@@ -713,7 +713,7 @@ def connection(socket_data, timeStep):
 	sock.close()
 								
 def main():
-
+	omarMain("UCLA", 3, 5)
 	
 	
 	rows = sheet.nrows
