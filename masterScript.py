@@ -381,11 +381,11 @@ def extractPixelData(pixels, outputFile, iterations, h, w):
 	for i in range(iterations):
 		if pixels[i][h][w] == '1':
 #		print(pixels[i][h][w])
-			print >>output, "1",
+			print >>output, "1,",
 			
 #			print("1", file = output, end = ",")
 		else:
-			print >>output, " ",
+			print >>output, " ,",
 			
 #			print("0", file = output, end = ",")
 	output.close()
@@ -515,8 +515,14 @@ def msgSeqHorizontal(msgPath, window_width = 15, char_height = 5, sleepAmt = 0):
 
 def omarMain(msg, dimension1, dimension2, sleepAmount = 0, HorizontalIfPossible = 1, path = 'out.txt'):
 	#first decide which charDict is best
-	length = max(dimension1, dimension2)
-	width = min(dimension1, dimension2)
+	if dimension1 > dimension2:
+		length = dimension1
+		width = dimension2
+	else:
+		length = dimension2
+		width = dimension1
+	#length = max(dimension1, dimension2)
+	#width = min(dimension1, dimension2)
 	
 
 	##CAREFUL WTTH LENGTH/WIDTH/HEIGHT IN AND OUT OF DIFFERENT FUNCTIONS
@@ -590,7 +596,7 @@ execute_time = time.time() + 60*min
 
   
 MAX_ROWS = 4
-MAX_COLS = 2
+MAX_COLS = 1
   
 
 latency = 1.0
@@ -673,15 +679,24 @@ def connection(socket_data, timeStep):
 	sys_time = time.time()
 	print ('connection made with ' +name)
 	
-	fileName = "Pixel" + str(row +1) + "-" + str(col+1) + ".csv"
+	fileName = "Pixel" + str(int(row - 1)) + "-" + str(int(col - 1)) + ".csv"
+	print("A")
+	print(fileName)
 	input = open("pxlData/" + fileName)
+	print("A")
+	
 	lines = input.readlines()
+	print("A")
 	input.close
+	print("A")
 	outString = lines[0] #gets 1st line of path
+	
+	print("A")
 	
 	# make last element of outString be the timeStep
 	outString = outString + str(timeStep)
 	
+	print(outString)
 	#sock.sendall(outString)
 	
 	
@@ -690,11 +705,12 @@ def connection(socket_data, timeStep):
 	packet = decode + ',' +str(execute_time)+','+str(sys_time)+','+str(latency) + "--" + outString
 	#print (packet)
 
+	print(packet)
 
 	sock.sendall(packet)
 	
 	
-	
+	print("sent")
 	
 
 	#retrieves latency for first connection
@@ -705,7 +721,7 @@ def connection(socket_data, timeStep):
 	sock.close()
 								
 def main():
-
+	omarMain("UCLA", 3, 5)
 	
 	
 	rows = sheet.nrows
