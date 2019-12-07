@@ -682,6 +682,7 @@ def connection(socket_data, timeStep):
 	# make last element of outString be the timeStep
 	outString = outString + str(timeStep)
 	
+	print(outString)
 	#sock.sendall(outString)
 	
 	
@@ -690,11 +691,12 @@ def connection(socket_data, timeStep):
 	packet = decode + ',' +str(execute_time)+','+str(sys_time)+','+str(latency) + "--" + outString
 	#print (packet)
 
+	print(packet)
 
 	sock.sendall(packet)
 	
 	
-	
+	print("sent")
 	
 
 	#retrieves latency for first connection
