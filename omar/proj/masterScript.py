@@ -324,7 +324,7 @@ def outputMsgToFile(Msg, w_height, width = WIDTH, dict = charDict35, path = 'out
 		#print(' ' * width, file = output)
 	for i in range(w_height):
 		#print(' ' * width, file = output)
-		print >>output, " " * width,
+		print >>output, " " * width
 			
 	output.close()
 
@@ -431,8 +431,9 @@ def msgSeq(msgPath, width = WIDTH, height = 15, sleepAmt = 0):
 	#extracting each pixel's seq data
 	for i in range(height):
 		for j in range (width):
-			name = "Pixel" + str(i) + "-" + str(j) + ".csv"
-			extractPixelData(pxls, "pxlData/" + name, iterations, i, j)
+			if j%2:
+				name = "Pixel" + str(i) + "-" + str(j) + ".csv"
+				extractPixelData(pxls, "pxlData/" + name, iterations, i, j)
 	
 	#print individual pixels to confirmation
 	for i in range(iterations):
@@ -679,33 +680,33 @@ def connection(socket_data, timeStep):
 	sys_time = time.time()
 	print ('connection made with ' +name)
 	
-	'''
-	fileName = "Pixel" + str(int(row - 1)) + "-" + str(int(col - 1)) + ".csv"
-	print("A")
-	print(fileName)
-	input = open("pxlData/" + fileName)
-	print("A")
 	
-	lines = input.readlines()
-	print("A")
-	input.close
-	print("A")
-	outString = str(lines[0]) #gets 1st line of path
+	#fileName = "Pixel" + str(int(row - 1)) + "-" + str(int(col - 1)) + ".csv"
+	#print("A")
+	#print(fileName)
+	#input = open("pxlData/" + fileName)
+	#print("A")
 	
-	print("A")
+	#lines = input.readlines()
+	#print("A")
+	#input.close
+	#print("A")
+	#outString = str(lines[0]) #gets 1st line of path
+	
+	#print("A")
 	
 	# make last element of outString be the timeStep
-	outString = outString + str(timeStep)
+	#outString = outString + str(timeStep)
 	
-	print(outString)
+	#print(outString)
 	#sock.sendall(outString)
 	
 	outstring = ""
-	'''
+	
 	
 	for i in range(5):
 		outString += "--"
-		fileName = "Pixel" + str(int(row - 1 + i)) + "-" + str(int(2*col - 1)) + ".csv"
+		fileName = "Pixel" + str(int(row - 1 + i)) + "-" + str(int(col - 1)) + ".csv"
 		input = open("pxlData/" + fileName)
 		lines = input.readlines()
 		input.close
