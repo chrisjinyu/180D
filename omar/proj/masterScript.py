@@ -365,8 +365,6 @@ def printPixel(Pxl):
 #		print ("1", end = "")
 	else:
 		print " ",
-			
-#		print (" ", end = "")
 
 def printLine(line, width = WIDTH):
 	for i in range(width):
@@ -535,15 +533,10 @@ def omarMain(msg, dimension1, dimension2, sleepAmount = 0, HorizontalIfPossible 
 		print("ERROR! This width is not supported")
 
 
-
-
-
-	
 #msg = "the quick brown fox jumped over the lazy dog 1234567890"
 msg = "UCLA!"
 win_width = 12
 time_delay = 0.05
-
 
 #outputMsgToFileHorizontally("UCLA", 12, charDict56)
 
@@ -611,12 +604,11 @@ sortedData = []
 port = 1
 
 # Give the location of the file 
-loc = ("/home/pi/Desktop/180D/Erick/Workspace/Bluetooth_Connection/synchronization/timing_client/test_data.xlsx") 
+loc = ("/home/pi/Desktop/180D/180D/Erick/Workspace/Bluetooth_Connection/synchronization/timing_client/test_data.xlsx") 
   
 # To open Workbook 
 wb = xlrd.open_workbook(loc) 
 sheet = wb.sheet_by_index(0)
-
   
 # Gathers name and bluetooth information
 def gather_data_one(rows):
@@ -628,14 +620,12 @@ def gather_data_two(rows):
 	for i in range (1, rows):
 		nameSeatList.append({"name":sheet.cell_value(i, 4), "row":sheet.cell_value(i, 5), "column":sheet.cell_value(i, 6)})  
 
-	
 # match names with seating
 def matching(size_lists):
 	for i in range (0,size_lists):
 		for j in range (0, size_lists):
 			if nameAddList[i]['name'] == nameSeatList[j]['name']:
 				combinedData.append({"name":nameAddList[i]['name'], "address":nameAddList[i]['address'], "row":nameSeatList[j]['row'], "column":nameSeatList[j]['column']})
-			
 		
 # connects and disconnects transmitting name
 def sort():
@@ -647,7 +637,6 @@ def sort():
 			for k in range (0, MAX_COLS):
 				if (int(combinedData[k]['row']) == i+1) and (int(combinedData[k]['column'])==j+1):
 					sortedData.append({"name":combinedData[k]['name'], "address":combinedData[k]['address'], "row":combinedData[k]['row'], "column":combinedData[k]['column']})
-							
 							
 def cycleConnections(timeStep):
 	for i in range(0,len(sortedData)):
@@ -714,9 +703,7 @@ def connection(socket_data, timeStep):
 	latency = float(data)
 
 	sock.close()
-	
-	
-							
+								
 def main():
 
 	
