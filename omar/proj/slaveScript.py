@@ -56,7 +56,7 @@ while 1:	#Wait for a connection
 				
 		for i in range(len(seq)-1):
 			print("seq[i]: " + str(seq[i]) + "  i: " + str(i))
-			if seq[i] == '1':
+			if str(seq[i]) == '1':
 				print("led on")
 				GPIO.output(18, GPIO.HIGH)
 			else:
