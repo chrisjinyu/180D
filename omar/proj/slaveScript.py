@@ -62,7 +62,7 @@ while 1:	#Wait for a connection
 			else:
 				print("led off")
 				GPIO.output(18, GPIO.LOW)
-			time.sleep(timeStep)
+			time.sleep(float(timeStep))
 			
 
 	finally:
