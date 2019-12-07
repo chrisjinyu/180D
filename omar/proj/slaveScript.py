@@ -56,7 +56,7 @@ while 1:	#Wait for a connection
 				
 		for i in range(len(seq)-1):
 			print("seq[i]:" + str(seq[i]) + "\ti:" + str(i))
-			if seq[i] == ' ':
+			if seq[i] == '  ':
 				print("led oFF")
 				GPIO.output(18, GPIO.LOW)
 			else:
