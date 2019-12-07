@@ -681,22 +681,22 @@ def connection(socket_data, timeStep):
 	print ('connection made with ' +name)
 	
 	
-	#fileName = "Pixel" + str(int(row - 1)) + "-" + str(int(col - 1)) + ".csv"
-	#print("A")
-	#print(fileName)
-	#input = open("pxlData/" + fileName)
-	#print("A")
+	fileName = "Pixel" + str(int(row - 1)) + "-" + str(int(col - 1)) + ".csv"
+	print("A")
+	print(fileName)
+	input = open("pxlData/" + fileName)
+	print("A")
 	
-	#lines = input.readlines()
-	#print("A")
-	#input.close
-	#print("A")
-	#outString = str(lines[0]) #gets 1st line of path
+	lines = input.readlines()
+	print("A")
+	input.close
+	print("A")
+	outString = str(lines[0]) #gets 1st line of path
 	
-	#print("A")
-	
+	print("A")
 	# make last element of outString be the timeStep
-	#outString = outString + str(timeStep)
+	
+	outString = outString + str(timeStep)
 	
 	#print(outString)
 	#sock.sendall(outString)
