@@ -578,70 +578,69 @@ sheet = wb.sheet_by_index(0)
   
 # Gathers name and bluetooth information
 def gather_data_one(rows):
-    for i in range (1, rows):
-        nameAddList.append({"name":sheet.cell_value(i, 0), "address":sheet.cell_value(i, 1)})
+	for i in range (1, rows):
+		nameAddList.append({"name":sheet.cell_value(i, 0), "address":sheet.cell_value(i, 1)})
 
 # Gathers names and seating location
 def gather_data_two(rows):
-    for i in range (1, rows):
-        nameSeatList.append({"name":sheet.cell_value(i, 4), "row":sheet.cell_value(i, 5), "column":sheet.cell_value(i, 6)})  
+	for i in range (1, rows):
+		nameSeatList.append({"name":sheet.cell_value(i, 4), "row":sheet.cell_value(i, 5), "column":sheet.cell_value(i, 6)})  
 
-    
+	
 # match names with seating
 def matching(size_lists):
-    for i in range (0,size_lists):
-        for j in range (0, size_lists):
-            if nameAddList[i]['name'] == nameSeatList[j]['name']:
-                combinedData.append({"name":nameAddList[i]['name'], "address":nameAddList[i]['address'], "row":nameSeatList[j]['row'], "column":nameSeatList[j]['column']})
-            
-        
+	for i in range (0,size_lists):
+		for j in range (0, size_lists):
+			if nameAddList[i]['name'] == nameSeatList[j]['name']:
+				combinedData.append({"name":nameAddList[i]['name'], "address":nameAddList[i]['address'], "row":nameSeatList[j]['row'], "column":nameSeatList[j]['column']})
+			
+		
 # connects and disconnects transmitting name
 def sort():
-    
-    #cycles through the rows and columns, connects, and transmits name
-    # note:rows and cols are 1's based 
-    for i in range(0, 1):
-        for j in range(0, MAX_COLS):
-            for k in range (0, MAX_COLS):
-                if (int(combinedData[k]['row']) == i+1) and (int(combinedData[k]['column'])==j+1):
-                    sortedData.append({"name":combinedData[k]['name'], "address":combinedData[k]['address'], "row":combinedData[k]['row'], "column":combinedData[k]['column']})
-                            
-                            
+	
+	#cycles through the rows and columns, connects, and transmits name
+	# note:rows and cols are 1's based 
+	for i in range(0, 1):
+		for j in range(0, MAX_COLS):
+			for k in range (0, MAX_COLS):
+				if (int(combinedData[k]['row']) == i+1) and (int(combinedData[k]['column'])==j+1):
+					sortedData.append({"name":combinedData[k]['name'], "address":combinedData[k]['address'], "row":combinedData[k]['row'], "column":combinedData[k]['column']})
+							
+							
 def cycleConnections(timeStep):
-    for i in range(0,len(sortedData)):
-        #Connect to bluetooth device
-                con = 0
-                while con == 0:
-                    #attempts to connect at all times with the BT address                  
-                    try:  
-            #connects to next device depending on button
-						connection(sortedData[i], timeStep)                       
-                        con = 1
-                    except:
-                            #dummy variable for now
+	for i in range(0,len(sortedData)):
+		#Connect to bluetooth device
+		con = 0
+		while con == 0:  #attempts to connect at all times with the BT address				  
+					try:  
+			#connects to next device depending on button
+						connection(sortedData[i], timeStep)
+						con = 1
+					except:
+							#dummy variable for now
 						a = 1
 
 def connection(socket_data, timeStep):
-    global latency
-    decode = 'a'
+	global latency
+	decode = 'a'
 
-    #grabs data
-    name    = socket_data['name']
-    row     = socket_data['row']
-    col     = socket_data['column']
-    bd_addr = socket_data['address']
+	#grabs data
+	name	= socket_data['name']
+	row	 = socket_data['row']
+	col	 = socket_data['column']
+	bd_addr = socket_data['address']
 
-    #sets up bluetooth socket
-    sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
-    sock.connect((bd_addr, port))
-    # the first connections latency is used for all
-    if (row == 1.0 and col == 1.0):
-        decode = 'i'
-    #uses the first connections latency for remaining devices
-    else:
-        decode = 'l'
-    sys_time = time.time()
-    print ('connection made with ' +name)
+	#sets up bluetooth socket
+	sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
+	sock.connect((bd_addr, port))
+	# the first connections latency is used for all
+	if (row == 1.0 and col == 1.0):
+		decode = 'i'
+	#uses the first connections latency for remaining devices
+	else:
+		decode = 'l'
+	sys_time = time.time()
+	print ('connection made with ' +name)
 	
 	fileName = "Pixel" + str(row +1) + "-" + str(col+1) + ".csv"
 	input = open("pxlData/" + fileName)
@@ -653,50 +652,50 @@ def connection(socket_data, timeStep):
 	outString = outString + str(timeStep)
 	
 	#sock.sendall(outString)
-    
+	
 	
 	#timing information packet after connection is made
-    #print(str(latency))
-    packet = decode + ',' +str(execute_time)+','+str(sys_time)+','+str(latency) + "--" + outString
-    #print (packet)
+	#print(str(latency))
+	packet = decode + ',' +str(execute_time)+','+str(sys_time)+','+str(latency) + "--" + outString
+	#print (packet)
 
 
-    sock.sendall(packet)
+	sock.sendall(packet)
 	
 	
 	
 	
 
-    #retrieves latency for first connection
-    data  = (sock.recv(1024))
-    
-    latency = float(data)
+	#retrieves latency for first connection
+	data  = (sock.recv(1024))
+	
+	latency = float(data)
 
-    sock.close()
-    
-    
-                            
+	sock.close()
+	
+	
+							
 def main():
 
 	
 	
-    rows = sheet.nrows
-    #gathering of data
-    gather_data_one(rows)
-    gather_data_two(rows)
-    
-    size_lists = len(nameSeatList)
-    #matches seating by names
-    matching(size_lists)
-    
-    #sorts seating in increasing order
-    sort()
+	rows = sheet.nrows
+	#gathering of data
+	gather_data_one(rows)
+	gather_data_two(rows)
+	
+	size_lists = len(nameSeatList)
+	#matches seating by names
+	matching(size_lists)
+	
+	#sorts seating in increasing order
+	sort()
 
-    #connects to paired devices
-    cycleConnections(timeStep)
+	#connects to paired devices
+	cycleConnections(timeStep)
 
 if __name__== "__main__":
   main()
-    
+	
 
-            
+			
