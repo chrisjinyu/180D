@@ -515,8 +515,13 @@ def msgSeqHorizontal(msgPath, window_width = 15, char_height = 5, sleepAmt = 0):
 
 def omarMain(msg, dimension1, dimension2, sleepAmount = 0, HorizontalIfPossible = 1, path = 'out.txt'):
 	#first decide which charDict is best
-	length = max(dimension1, dimension2)
-	width = min(dimension1, dimension2)
+	if dimension1 > dimension2:
+		length = dimension1
+	else:
+		length = dimension2
+		
+	#length = max(dimension1, dimension2)
+	#width = min(dimension1, dimension2)
 	
 
 	##CAREFUL WTTH LENGTH/WIDTH/HEIGHT IN AND OUT OF DIFFERENT FUNCTIONS
