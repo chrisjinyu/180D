@@ -4,21 +4,6 @@ import bluetooth
 import RPi.GPIO as GPIO
 SLEEP_TIME = 0.1
 
-#must call with 2 args - the path of the sequence file and the time step 
-#path = str(sys.argv[1])
-#seq = sys.argv[1]
-#timeStep = float(sys.argv[2])
-
-'''
-input = open(path, 'r')
-inpString = input.read()
-seq = inpString.split(',')
-input.close()
-'''
-
-
-	
-
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 GPIO.setup(18,GPIO.OUT)
@@ -62,7 +47,7 @@ while 1:	#Wait for a connection
 		connection.sendall(packet)
 		while(final < expected_time):
 			final = time.time() - latency
-		#print('out')
+		print('out')
 
 
 		inpString = tempParsed[1]
@@ -70,9 +55,12 @@ while 1:	#Wait for a connection
 		timeStep = seq[len(seq)-1]
 				
 		for i in range(len(seq)-1):
+			print("enter For")
 			if seq[i] == '1':
+				print("led on")
 				GPIO.output(18, GPIO.HIGH)
 			else:
+				print("led off")
 				GPIO.output(18, GPIO.LOW)
 			time.sleep(timeStep)
 			
