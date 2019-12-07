@@ -681,6 +681,7 @@ def connection(socket_data, timeStep):
 	
 	fileName = "Pixel" + str(row + 1) + "-" + str(col + 1) + ".csv"
 	print("A")
+	print(fileName)
 	input = open("pxlData/" + fileName)
 	print("A")
 	
