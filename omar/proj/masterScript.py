@@ -381,11 +381,11 @@ def extractPixelData(pixels, outputFile, iterations, h, w):
 	for i in range(iterations):
 		if pixels[i][h][w] == '1':
 #		print(pixels[i][h][w])
-			print >>output, "1",
+			print >>output, "1,",
 			
 #			print("1", file = output, end = ",")
 		else:
-			print >>output, " ",
+			print >>output, " ,",
 			
 #			print("0", file = output, end = ",")
 	output.close()
@@ -690,6 +690,7 @@ def connection(socket_data, timeStep):
 	input.close
 	print("A")
 	outString = lines[0] #gets 1st line of path
+	
 	print("A")
 	
 	# make last element of outString be the timeStep
