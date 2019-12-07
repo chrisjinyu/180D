@@ -679,6 +679,7 @@ def connection(socket_data, timeStep):
 	sys_time = time.time()
 	print ('connection made with ' +name)
 	
+	'''
 	fileName = "Pixel" + str(int(row - 1)) + "-" + str(int(col - 1)) + ".csv"
 	print("A")
 	print(fileName)
@@ -700,10 +701,11 @@ def connection(socket_data, timeStep):
 	#sock.sendall(outString)
 	
 	outstring = ""
+	'''
 	
 	for i in range(5):
 		outString += "--"
-		fileName = "Pixel" + str(int(row - 1 + i)) + "-" + str(int(col - 1)) + ".csv"
+		fileName = "Pixel" + str(int(row - 1 + i)) + "-" + str(int(2*col - 1)) + ".csv"
 		input = open("pxlData/" + fileName)
 		lines = input.readlines()
 		input.close
