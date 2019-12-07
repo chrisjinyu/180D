@@ -28,6 +28,10 @@ while 1:	#Wait for a connection
 	print('waiting for a connection')
 	connection, client_address = server_sock.accept()
 	GPIO.output(18,GPIO.HIGH)
+	GPIO.output(23,GPIO.HIGH)
+	GPIO.output(24,GPIO.HIGH)
+	GPIO.output(25,GPIO.HIGH)
+	GPIO.output(12,GPIO.HIGH)
 	try:
 		print('connection made')
 		# Receive the data         
