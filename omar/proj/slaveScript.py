@@ -61,7 +61,7 @@ while 1:	#Wait for a connection
 		
 		inpString1 = tempParsed[1]
 		seq1 = inpString1.split(',')
-		timeStep = seq[len(seq)-1]
+		timeStep = seq1[len(seq1)-1]
 			
 		inpString2 = tempParsed[2]
 		seq2 = inpString2.split(',')
