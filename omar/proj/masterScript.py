@@ -699,10 +699,25 @@ def connection(socket_data, timeStep):
 	print(outString)
 	#sock.sendall(outString)
 	
+	outstring = ""
+	
+	for i in range(5):
+		outString += "--"
+		fileName = "Pixel" + str(int(row - 1 + i)) + "-" + str(int(col - 1)) + ".csv"
+		input = open("pxlData/" + fileName)
+		lines = input.readlines()
+		input.close
+		outString += str(lines[0]) #gets 1st line of path
+		# make last element of outString be the timeStep
+		outString += str(timeStep)
+		
+	print(outString)
+	
+	
 	
 	#timing information packet after connection is made
 	#print(str(latency))
-	packet = decode + ',' +str(execute_time)+','+str(sys_time)+','+str(latency) + "--" + outString
+	packet = decode + ',' +str(execute_time)+','+str(sys_time)+','+str(latency) + outString
 	#print (packet)
 
 	print(packet)

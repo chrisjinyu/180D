@@ -8,6 +8,15 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 GPIO.setup(18,GPIO.OUT)
 GPIO.output(18,GPIO.LOW)
+GPIO.setup(23,GPIO.OUT)
+GPIO.output(23,GPIO.LOW)
+GPIO.setup(24,GPIO.OUT)
+GPIO.output(24,GPIO.LOW)
+GPIO.setup(25,GPIO.OUT)
+GPIO.output(25,GPIO.LOW)
+GPIO.setup(12,GPIO.OUT)
+GPIO.output(12,GPIO.LOW)
+
 
 server_sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
 
@@ -49,19 +58,65 @@ while 1:	#Wait for a connection
 			final = time.time() - latency
 		print('out')
 
-
-		inpString = tempParsed[1]
-		seq = inpString.split(',')
+		
+		inpString1 = tempParsed[1]
+		seq1 = inpString1.split(',')
 		timeStep = seq[len(seq)-1]
-				
+			
+		inpString2 = tempParsed[2]
+		seq2 = inpString2.split(',')
+		
+		inpString3 = tempParsed[3]
+		seq3 = inpString3.split(',')
+		
+		inpString4 = tempParsed[4]
+		seq4 = inpString4.split(',')
+		
+		inpString5 = tempParsed[5]
+		seq5 = inpString5.split(',')
+		
+
+
+		
 		for i in range(len(seq)-1):
 			print("seq[i]:" + str(seq[i]) + "\ti:" + str(i))
-			if seq[i] == '  ':
+			if seq1[i] == '  ':
 				print("led oFF")
 				GPIO.output(18, GPIO.LOW)
 			else:
 				print("led oN")
 				GPIO.output(18, GPIO.HIGH)
+			
+			if seq2[i] == '  ':
+				print("led oFF")
+				GPIO.output(23, GPIO.LOW)
+			else:
+				print("led oN")
+				GPIO.output(23, GPIO.HIGH)
+			
+			if seq3[i] == '  ':
+				print("led oFF")
+				GPIO.output(24, GPIO.LOW)
+			else:
+				print("led oN")
+				GPIO.output(24, GPIO.HIGH)
+			
+			if seq4[i] == '  ':
+				print("led oFF")
+				GPIO.output(25, GPIO.LOW)
+			else:
+				print("led oN")
+				GPIO.output(25, GPIO.HIGH)
+			
+			if seq5[i] == '  ':
+				print("led oFF")
+				GPIO.output(12, GPIO.LOW)
+			else:
+				print("led oN")
+				GPIO.output(12, GPIO.HIGH)
+			
+			
+			
 			time.sleep(float(timeStep))
 			
 
