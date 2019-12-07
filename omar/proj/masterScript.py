@@ -284,7 +284,7 @@ def msgOutputter(Msg, dict = charDict35, width = WIDTH, length = LENGTH):
 	for i in range(length):
 		for char in Msg:
 			printLine(dict[char][i], width)
-			print(" ", end = "")
+			print " ",
 		print()
 	print()
 
@@ -301,19 +301,31 @@ def outputMsgToFile(Msg, w_height, width = WIDTH, dict = charDict35, path = 'out
 	output = open(path, 'w')
 	Msg = Msg.upper()
 	for i in range(w_height):
-		print(' ' * width, file = output)
+		print >>output, ' ' * width,
+				
+		#print(' ' * width, file = output)
 	for char in Msg:
 		for i in range(LENGTH):
 			#printLine(charDict[char][i])
 			for j in range(width):
 				if(dict[char][i][j]):
-					print("1", end = "", file = output)
+					print >>output, "1",
+					
+					#print("1", end = "", file = output)
 				else:
-					print(" ", end = "", file = output)
-			print(file = output)
-		print(' ' * width, file = output)
+					print >>output, "0",
+				
+#					print(" ", end = "", file = output)
+			print >>output, ""
+				
+			#print(file = output)
+		print >>output, " " * width
+			
+		#print(' ' * width, file = output)
 	for i in range(w_height):
-		print(' ' * width, file = output)
+		#print(' ' * width, file = output)
+		print >>output, " " * width,
+			
 	output.close()
 
 def outputMsgToFileHorizontally(Msg, w_width, dict = charDict55, height = 5, path = 'out.txt'):
@@ -326,22 +338,35 @@ def outputMsgToFileHorizontally(Msg, w_width, dict = charDict55, height = 5, pat
 	#print (numChar)
 	msgPixelWidth = numChar * 6
 	for i in range(height): #for each row of out.txt
-		print(' ' * w_width, end = "", file = output)
+		print >>output, " " * width,
+#		print(' ' * w_width, end = "", file = output)
 		for char in Msg:
 			for j in range(5): #for each pixel in a char
 				if(dict[char][i][j]):
-					print("1", end = "", file = output)
+					print >>output, "1",
+			
+					#print("1", end = "", file = output)
 				else:
-					print(" ", end = "", file = output)
-			print(' ', end = "", file = output)
-		print(' ' * w_width, file = output)
+					print >>output, " ",
+			
+					#print(" ", end = "", file = output)
+			print >>output, " ",
+			
+			#print(' ', end = "", file = output)
+		print >>output, " " * width
+			
+		#print(' ' * w_width, file = output)
 	output.close()
 
 def printPixel(Pxl):
 	if Pxl:
-		print ("1", end = "")
+		print "1",
+			
+#		print ("1", end = "")
 	else:
-		print (" ", end = "")
+		print " ",
+			
+#		print (" ", end = "")
 
 def printLine(line, width = WIDTH):
 	for i in range(width):
@@ -358,9 +383,13 @@ def extractPixelData(pixels, outputFile, iterations, h, w):
 	for i in range(iterations):
 		if pixels[i][h][w] == '1':
 #		print(pixels[i][h][w])
-			print("1", file = output, end = ",")
+			print >>output, "1",
+			
+#			print("1", file = output, end = ",")
 		else:
-			print("0", file = output, end = ",")
+			print >>output, " ",
+			
+#			print("0", file = output, end = ",")
 	output.close()
 
 def msgSeq(msgPath, width = WIDTH, height = 15, sleepAmt = 0):
@@ -384,10 +413,14 @@ def msgSeq(msgPath, width = WIDTH, height = 15, sleepAmt = 0):
 		if msg_height == 1:
 			msg_width = t_width - 1 #don't count the newline
 		elif t_width - 1 > msg_width:
-			print("ERROR!\nAll lines must have the same amt of chars", file = sys.stderr)
-			print("Line: " + str(msg_height) + " has " + str(t_width-1) + " chars", file = sys.stderr)
+			print >>sys.stderr, "ERROR!\nAll lines must have the same amt of chars"
+			print >>sys.stderr, "Line: " + str(msg_height) + " has " + str(t_width-1) + " chars"
+				
+			#print("ERROR!\nAll lines must have the same amt of chars", file = sys.stderr)
+			#print("Line: " + str(msg_height) + " has " + str(t_width-1) + " chars", file = sys.stderr)
 	if msg_width < width:
-		print("ERROR!\nWidth of text input smaller than window width", file = sys.stderr)
+		print >>sys.stderr, "ERROR!\nWidth of text input smaller than window width"
+		#print("ERROR!\nWidth of text input smaller than window width", file = sys.stderr)
 
 	iterations = msg_height - height  #how many iterations to get through msg
 	
@@ -411,9 +444,11 @@ def msgSeq(msgPath, width = WIDTH, height = 15, sleepAmt = 0):
 				pxl_lines = input.readlines() #all in line[0]
 				input.close()
 				if pxl_lines[0][2*i] == '1':
-					print("1", end = "")
+					print "1",
+					#print("1", end = "")
 				else:
-					print(" ", end = "")
+					print " ",
+					#print(" ", end = "")
 			print()	
 		print("=" * width)
 		time.sleep(sleepAmt)
@@ -437,10 +472,15 @@ def msgSeqHorizontal(msgPath, window_width = 15, char_height = 5, sleepAmt = 0):
 		if msg_height == 1:
 			msg_width = t_width - 1 #don't count the newline
 		elif t_width - 1 > msg_width:
-			print("ERROR!\nAll lines must have the same amt of chars", file = sys.stderr)
-			print("Line: " + str(msg_height) + " has " + str(t_width-1) + " chars", file = sys.stderr)
+			print >>sys.stderr, "ERROR!\nAll lines must have the same amt of chars"
+			print >>sys.stderr, "Line: " + str(msg_height) + " has " + str(t_width-1) + " chars"
+			
+			#print("ERROR!\nAll lines must have the same amt of chars", file = sys.stderr)
+			#print("Line: " + str(msg_height) + " has " + str(t_width-1) + " chars", file = sys.stderr)
 	if msg_width < window_width:
-		print("ERROR!\nWidth of text input smaller than window width", file = sys.stderr)
+		print >>sys.stderr, "ERROR!\nWidth of text input smaller than window width"
+		
+		#print("ERROR!\nWidth of text input smaller than window width", file = sys.stderr)
 	
 	iterations = msg_width - window_width  #how many iterations to get through msg
 	
@@ -466,9 +506,11 @@ def msgSeqHorizontal(msgPath, window_width = 15, char_height = 5, sleepAmt = 0):
 				pxl_lines = input.readlines() #all in line[0]
 				input.close()
 				if pxl_lines[0][2*i] == '1':
-					print("1", end = "")
+					print "1",
+#					print("1", end = "")
 				else:
-					print(" ", end = "")
+					print " ",
+#					print(" ", end = "")
 			print()	
 		print("=" * window_width)	
 		time.sleep(sleepAmt)
