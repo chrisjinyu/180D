@@ -734,7 +734,7 @@ def main():
 	sort()
 
 	#connects to paired devices
-	cycleConnections(timeStep)
+	cycleConnections(1)
 
 if __name__== "__main__":
   main()
