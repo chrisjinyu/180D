@@ -596,7 +596,7 @@ execute_time = time.time() + 60*min
 
   
 MAX_ROWS = 4
-MAX_COLS = 1
+MAX_COLS = 3
   
 
 latency = 1.0
