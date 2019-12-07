@@ -615,11 +615,11 @@ def cycleConnections(timeStep):
                     #attempts to connect at all times with the BT address                  
                     try:  
             #connects to next device depending on button
-                connection(sortedData[i], timeStep)                       
+						connection(sortedData[i], timeStep)                       
                         con = 1
-                        except:
+                    except:
                             #dummy variable for now
-                            a = 1
+						a = 1
 
 def connection(socket_data, timeStep):
     global latency
