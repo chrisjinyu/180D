@@ -673,11 +673,17 @@ def connection(socket_data, timeStep):
 	sys_time = time.time()
 	print ('connection made with ' +name)
 	
-	fileName = "Pixel" + str(row +1) + "-" + str(col+1) + ".csv"
+	fileName = "Pixel" + str(row + 1) + "-" + str(col + 1) + ".csv"
+	print("A")
 	input = open("pxlData/" + fileName)
+	print("A")
+	
 	lines = input.readlines()
+	print("A")
 	input.close
+	print("A")
 	outString = lines[0] #gets 1st line of path
+	print("A")
 	
 	# make last element of outString be the timeStep
 	outString = outString + str(timeStep)
