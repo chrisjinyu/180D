@@ -679,7 +679,7 @@ def connection(socket_data, timeStep):
 	sys_time = time.time()
 	print ('connection made with ' +name)
 	
-	fileName = "Pixel" + str(row + 1) + "-" + str(col + 1) + ".csv"
+	fileName = "Pixel" + str(int(row + 1)) + "-" + str(int(col + 1)) + ".csv"
 	print("A")
 	print(fileName)
 	input = open("pxlData/" + fileName)
