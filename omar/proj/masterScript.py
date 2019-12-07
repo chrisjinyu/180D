@@ -689,7 +689,7 @@ def connection(socket_data, timeStep):
 	print("A")
 	input.close
 	print("A")
-	outString = lines[0] #gets 1st line of path
+	outString = str(lines[0]) #gets 1st line of path
 	
 	print("A")
 	
@@ -737,7 +737,7 @@ def main():
 	sort()
 
 	#connects to paired devices
-	cycleConnections(1)
+	cycleConnections(0.5)
 
 if __name__== "__main__":
   main()
