@@ -1,0 +1,37 @@
+Red Light Green Light Game 
+ - screen at front displaying the light and trivia questions
+ - 2 cameras at front detecting the led array on the caps
+
+Variables: 
+	- length of random timer
+	- penalties 
+	- power ups and effects
+	
+Position/location 
+ - cap on chest with 12 led grid used as thing cameras track using corners using openCV 
+ - 
+
+Gesture - gyro/accel vs image recognition
+ - "hands up" - because of police or ...
+ - "
+ - gesture at every stop 
+
+Voice
+ - 3rd person to control "Start" vs "stop"
+	OR
+ - answer trivia questions with a(lpha), b(eta), ... or true/false etc.
+
+
+
+- every stop play a minigame - each minigame gives a point - spend points on powerups 
+	- trivia questions
+	- powerups to knock other party back or make them perfrom some action
+
+
+- idea: virutal race and people dont actually move toward cameras
+	- use jumps or somthing similar for position
+
+
+
+
+
