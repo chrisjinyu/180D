@@ -1,7 +1,7 @@
 import bluetooth
 import time
 import RPi.GPIO as GPIO
-SLEEP_TIME = 0.1
+SLEEP_TIME = 0.5
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
