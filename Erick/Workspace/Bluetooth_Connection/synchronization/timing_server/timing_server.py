@@ -19,25 +19,30 @@ while 1:	#Wait for a connection
 	connection, client_address = server_sock.accept()
 	GPIO.output(18,GPIO.HIGH)
 	try:
+		print('connection made')
 		# Receive the data         
-		data = (connection.recv(1024).decode("utf-8"))
+		data = (connection.recv(1024))
 		print(data)
 		current = time.time()
-		#print(current)
 		
 		parsed = data.split(',')
-		#parsed = parsed.decode('utf-8')
-		diff = float(parsed[1])
-		expected_time = float(parsed[0])
-		#print(diff)
-		latency = current - diff
-		#print(latency)
-		
+		id = parsed[0]
+		diff = float(parsed[2])
+		expected_time = float(parsed[1])
+
+		# device is the latency initializer
+		if (id == 'i'):
+			latency = abs(current - diff)
+		# reads initializers latency
+		else:
+			latency = float(parsed[3])
+
+#		print (latency)
 		final = time.time() - latency
-		
+
+		packet = str(latency)
+		connection.sendall(packet)
 		while(final < expected_time):
-			#print(final)
-			#time.sleep(1)
 			final = time.time() - latency
 		print('out')
 

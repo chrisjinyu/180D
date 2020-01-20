@@ -1,5 +1,9 @@
 import sys
 import time
+import xlrd
+import bluetooth
+import time
+import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
 #import numpy as np
 
 #3X5
@@ -280,7 +284,7 @@ def msgOutputter(Msg, dict = charDict35, width = WIDTH, length = LENGTH):
 	for i in range(length):
 		for char in Msg:
 			printLine(dict[char][i], width)
-			print(" ", end = "")
+			print " ",
 		print()
 	print()
 
@@ -297,19 +301,31 @@ def outputMsgToFile(Msg, w_height, width = WIDTH, dict = charDict35, path = 'out
 	output = open(path, 'w')
 	Msg = Msg.upper()
 	for i in range(w_height):
-		print(' ' * width, file = output)
+		print >>output, ' ' * width,
+				
+		#print(' ' * width, file = output)
 	for char in Msg:
 		for i in range(LENGTH):
 			#printLine(charDict[char][i])
 			for j in range(width):
 				if(dict[char][i][j]):
-					print("1", end = "", file = output)
+					print >>output, "1",
+					
+					#print("1", end = "", file = output)
 				else:
-					print(" ", end = "", file = output)
-			print(file = output)
-		print(' ' * width, file = output)
+					print >>output, "0",
+				
+#					print(" ", end = "", file = output)
+			print >>output, ""
+				
+			#print(file = output)
+		print >>output, " " * width
+			
+		#print(' ' * width, file = output)
 	for i in range(w_height):
-		print(' ' * width, file = output)
+		#print(' ' * width, file = output)
+		print >>output, " " * width
+			
 	output.close()
 
 def outputMsgToFileHorizontally(Msg, w_width, dict = charDict55, height = 5, path = 'out.txt'):
@@ -322,22 +338,33 @@ def outputMsgToFileHorizontally(Msg, w_width, dict = charDict55, height = 5, pat
 	#print (numChar)
 	msgPixelWidth = numChar * 6
 	for i in range(height): #for each row of out.txt
-		print(' ' * w_width, end = "", file = output)
+		print >>output, " " * width,
+#		print(' ' * w_width, end = "", file = output)
 		for char in Msg:
 			for j in range(5): #for each pixel in a char
 				if(dict[char][i][j]):
-					print("1", end = "", file = output)
+					print >>output, "1",
+			
+					#print("1", end = "", file = output)
 				else:
-					print(" ", end = "", file = output)
-			print(' ', end = "", file = output)
-		print(' ' * w_width, file = output)
+					print >>output, " ",
+			
+					#print(" ", end = "", file = output)
+			print >>output, " ",
+			
+			#print(' ', end = "", file = output)
+		print >>output, " " * width
+			
+		#print(' ' * w_width, file = output)
 	output.close()
 
 def printPixel(Pxl):
 	if Pxl:
-		print ("1", end = "")
+		print "1",
+			
+#		print ("1", end = "")
 	else:
-		print (" ", end = "")
+		print " ",
 
 def printLine(line, width = WIDTH):
 	for i in range(width):
@@ -354,9 +381,13 @@ def extractPixelData(pixels, outputFile, iterations, h, w):
 	for i in range(iterations):
 		if pixels[i][h][w] == '1':
 #		print(pixels[i][h][w])
-			print("1", file = output, end = ",")
+			print >>output, "1,",
+			
+#			print("1", file = output, end = ",")
 		else:
-			print("0", file = output, end = ",")
+			print >>output, " ,",
+			
+#			print("0", file = output, end = ",")
 	output.close()
 
 def msgSeq(msgPath, width = WIDTH, height = 15, sleepAmt = 0):
@@ -380,10 +411,14 @@ def msgSeq(msgPath, width = WIDTH, height = 15, sleepAmt = 0):
 		if msg_height == 1:
 			msg_width = t_width - 1 #don't count the newline
 		elif t_width - 1 > msg_width:
-			print("ERROR!\nAll lines must have the same amt of chars", file = sys.stderr)
-			print("Line: " + str(msg_height) + " has " + str(t_width-1) + " chars", file = sys.stderr)
+			print >>sys.stderr, "ERROR!\nAll lines must have the same amt of chars"
+			print >>sys.stderr, "Line: " + str(msg_height) + " has " + str(t_width-1) + " chars"
+				
+			#print("ERROR!\nAll lines must have the same amt of chars", file = sys.stderr)
+			#print("Line: " + str(msg_height) + " has " + str(t_width-1) + " chars", file = sys.stderr)
 	if msg_width < width:
-		print("ERROR!\nWidth of text input smaller than window width", file = sys.stderr)
+		print >>sys.stderr, "ERROR!\nWidth of text input smaller than window width"
+		#print("ERROR!\nWidth of text input smaller than window width", file = sys.stderr)
 
 	iterations = msg_height - height  #how many iterations to get through msg
 	
@@ -396,8 +431,9 @@ def msgSeq(msgPath, width = WIDTH, height = 15, sleepAmt = 0):
 	#extracting each pixel's seq data
 	for i in range(height):
 		for j in range (width):
-			name = "Pixel" + str(i) + "-" + str(j) + ".csv"
-			extractPixelData(pxls, "pxlData/" + name, iterations, i, j)
+			if j%2:
+				name = "Pixel" + str(i) + "-" + str(j) + ".csv"
+				extractPixelData(pxls, "pxlData/" + name, iterations, i, j)
 	
 	#print individual pixels to confirmation
 	for i in range(iterations):
@@ -407,9 +443,11 @@ def msgSeq(msgPath, width = WIDTH, height = 15, sleepAmt = 0):
 				pxl_lines = input.readlines() #all in line[0]
 				input.close()
 				if pxl_lines[0][2*i] == '1':
-					print("1", end = "")
+					print "1",
+					#print("1", end = "")
 				else:
-					print(" ", end = "")
+					print " ",
+					#print(" ", end = "")
 			print()	
 		print("=" * width)
 		time.sleep(sleepAmt)
@@ -433,10 +471,15 @@ def msgSeqHorizontal(msgPath, window_width = 15, char_height = 5, sleepAmt = 0):
 		if msg_height == 1:
 			msg_width = t_width - 1 #don't count the newline
 		elif t_width - 1 > msg_width:
-			print("ERROR!\nAll lines must have the same amt of chars", file = sys.stderr)
-			print("Line: " + str(msg_height) + " has " + str(t_width-1) + " chars", file = sys.stderr)
+			print >>sys.stderr, "ERROR!\nAll lines must have the same amt of chars"
+			print >>sys.stderr, "Line: " + str(msg_height) + " has " + str(t_width-1) + " chars"
+			
+			#print("ERROR!\nAll lines must have the same amt of chars", file = sys.stderr)
+			#print("Line: " + str(msg_height) + " has " + str(t_width-1) + " chars", file = sys.stderr)
 	if msg_width < window_width:
-		print("ERROR!\nWidth of text input smaller than window width", file = sys.stderr)
+		print >>sys.stderr, "ERROR!\nWidth of text input smaller than window width"
+		
+		#print("ERROR!\nWidth of text input smaller than window width", file = sys.stderr)
 	
 	iterations = msg_width - window_width  #how many iterations to get through msg
 	
@@ -462,17 +505,25 @@ def msgSeqHorizontal(msgPath, window_width = 15, char_height = 5, sleepAmt = 0):
 				pxl_lines = input.readlines() #all in line[0]
 				input.close()
 				if pxl_lines[0][2*i] == '1':
-					print("1", end = "")
+					print "1",
+#					print("1", end = "")
 				else:
-					print(" ", end = "")
+					print " ",
+#					print(" ", end = "")
 			print()	
 		print("=" * window_width)	
 		time.sleep(sleepAmt)
 
-def main(msg, dimension1, dimension2, sleepAmount = 0, HorizontalIfPossible = 1, path = 'out.txt'):
+def omarMain(msg, dimension1, dimension2, sleepAmount = 0, HorizontalIfPossible = 1, path = 'out.txt'):
 	#first decide which charDict is best
-	length = max(dimension1, dimension2)
-	width = min(dimension1, dimension2)
+	if dimension1 > dimension2:
+		length = dimension1
+		width = dimension2
+	else:
+		length = dimension2
+		width = dimension1
+	#length = max(dimension1, dimension2)
+	#width = min(dimension1, dimension2)
 	
 
 	##CAREFUL WTTH LENGTH/WIDTH/HEIGHT IN AND OUT OF DIFFERENT FUNCTIONS
@@ -487,32 +538,28 @@ def main(msg, dimension1, dimension2, sleepAmount = 0, HorizontalIfPossible = 1,
 		msgSeq(path, width, length, sleepAmount)
 	else:
 		print("ERROR! This width is not supported")
-	
+
+
 #msg = "the quick brown fox jumped over the lazy dog 1234567890"
 msg = "UCLA!"
 win_width = 12
 time_delay = 0.05
 
+#outputMsgToFileHorizontally("UCLA", 12, charDict56)
 
-outputMsgToFileHorizontally("UCLA", 12, charDict56)
+#omarMain(msg, 6, win_width, time_delay)
+#omarMain(msg, 5, win_width, time_delay)
 
-main(msg, 6, win_width, time_delay)
-main(msg, 5, win_width, time_delay)
-
-main(msg, 6, win_width, time_delay, 0)
-main(msg, 5, win_width, time_delay, 0)
-main(msg, 4, win_width, time_delay)
-main(msg, 3, win_width, time_delay)
-
-
+#omarMain(msg, 6, win_width, time_delay, 0)
+#omarMain(msg, 5, win_width, time_delay, 0)
+#omarMain(msg, 4, win_width, time_delay)
+#omarMain(msg, 3, win_width, time_delay)
 
 '''
 for i in range(3,6):
 	outputMsgToFile("UCLA", 12,charDicts[i], i)
 	msgSeq("out.txt", 12, i)
 '''
-
-
 '''
 for ch in charDict35:
 	msgOutputter(ch, charDict35, 3)
@@ -533,3 +580,185 @@ print()
 msgOutputter('I ~ U', charDict56, 5, 6)
 print("=========")
 '''
+
+
+# connection button
+button = 10
+  
+
+# button initialization
+GPIO.setwarnings(False) # Ignore warning for now
+GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
+GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Set pin 10 to be an input pin and set initial value to be pulled low (off)
+
+#time to execute algorithm
+min = .30
+execute_time = time.time() + 60*min
+
+  
+MAX_ROWS = 4
+MAX_COLS = 3
+  
+
+latency = 1.0
+
+nameAddList = []
+nameSeatList = []
+combinedData = []
+sortedData = []
+
+#bluetooth port 
+port = 1
+
+# Give the location of the file 
+loc = ("/home/pi/Desktop/180D/180D/Erick/Workspace/Bluetooth_Connection/synchronization/timing_client/test_data.xlsx") 
+  
+# To open Workbook 
+wb = xlrd.open_workbook(loc) 
+sheet = wb.sheet_by_index(0)
+  
+# Gathers name and bluetooth information
+def gather_data_one(rows):
+	for i in range (1, rows):
+		nameAddList.append({"name":sheet.cell_value(i, 0), "address":sheet.cell_value(i, 1)})
+
+# Gathers names and seating location
+def gather_data_two(rows):
+	for i in range (1, rows):
+		nameSeatList.append({"name":sheet.cell_value(i, 4), "row":sheet.cell_value(i, 5), "column":sheet.cell_value(i, 6)})  
+
+# match names with seating
+def matching(size_lists):
+	for i in range (0,size_lists):
+		for j in range (0, size_lists):
+			if nameAddList[i]['name'] == nameSeatList[j]['name']:
+				combinedData.append({"name":nameAddList[i]['name'], "address":nameAddList[i]['address'], "row":nameSeatList[j]['row'], "column":nameSeatList[j]['column']})
+		
+# connects and disconnects transmitting name
+def sort():
+	
+	#cycles through the rows and columns, connects, and transmits name
+	# note:rows and cols are 1's based 
+	for i in range(0, 1):
+		for j in range(0, MAX_COLS):
+			for k in range (0, MAX_COLS):
+				if (int(combinedData[k]['row']) == i+1) and (int(combinedData[k]['column'])==j+1):
+					sortedData.append({"name":combinedData[k]['name'], "address":combinedData[k]['address'], "row":combinedData[k]['row'], "column":combinedData[k]['column']})
+							
+def cycleConnections(timeStep):
+	for i in range(0,len(sortedData)):
+		#Connect to bluetooth device
+		con = 0
+		while con == 0:  #attempts to connect at all times with the BT address				  
+					try:  
+			#connects to next device depending on button
+						connection(sortedData[i], timeStep)
+						con = 1
+					except:
+							#dummy variable for now
+						a = 1
+
+def connection(socket_data, timeStep):
+	global latency
+	decode = 'a'
+
+	#grabs data
+	name	= socket_data['name']
+	row	 = socket_data['row']
+	col	 = socket_data['column']
+	bd_addr = socket_data['address']
+
+	#sets up bluetooth socket
+	sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
+	sock.connect((bd_addr, port))
+	# the first connections latency is used for all
+	if (row == 1.0 and col == 1.0):
+		decode = 'i'
+	#uses the first connections latency for remaining devices
+	else:
+		decode = 'l'
+	sys_time = time.time()
+	print ('connection made with ' +name)
+	
+	
+	fileName = "Pixel" + str(int(row - 1)) + "-" + str(int(col - 1)) + ".csv"
+	print("A")
+	print(fileName)
+	input = open("pxlData/" + fileName)
+	print("A")
+	
+	lines = input.readlines()
+	print("A")
+	input.close
+	print("A")
+	outString = str(lines[0]) #gets 1st line of path
+	
+	print("A")
+	# make last element of outString be the timeStep
+	
+	outString = outString + str(timeStep)
+	
+	#print(outString)
+	#sock.sendall(outString)
+	
+	outstring = ""
+	
+	
+	for i in range(5):
+		outString += "--"
+		fileName = "Pixel" + str(int(row - 1 + i)) + "-" + str(int(col - 1)) + ".csv"
+		input = open("pxlData/" + fileName)
+		lines = input.readlines()
+		input.close
+		outString += str(lines[0]) #gets 1st line of path
+		# make last element of outString be the timeStep
+		outString += str(timeStep)
+		
+	print(outString)
+	
+	
+	
+	#timing information packet after connection is made
+	#print(str(latency))
+	packet = decode + ',' +str(execute_time)+','+str(sys_time)+','+str(latency) + outString
+	#print (packet)
+
+	print(packet)
+
+	sock.sendall(packet)
+	
+	
+	print("sent")
+	
+
+	#retrieves latency for first connection
+	data  = (sock.recv(1024))
+	
+	latency = float(data)
+
+	sock.close()
+								
+def main():
+	omarMain("UCLA", 3, 5)
+	
+	
+	rows = sheet.nrows
+	#gathering of data
+	gather_data_one(rows)
+	gather_data_two(rows)
+	
+	size_lists = len(nameSeatList)
+	#matches seating by names
+	matching(size_lists)
+	
+	#sorts seating in increasing order
+	sort()
+
+	#connects to paired devices
+	cycleConnections(0.5)
+
+if __name__== "__main__":
+  main()
+	
+
+			
