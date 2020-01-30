@@ -1,11 +1,18 @@
 import RPi.GPIO as GPIO
 import time
 
+#trig's must be seperate
+TRIG1 = 4
+TRIG2 = 2
 
-TRIG1 = 23
-ECHO1 = 24
-TRIG2 = 20
-ECHO2 = 21
+#echo's can be shared??
+ECHO1 = 14
+ECHO2 = 3
+
+#TRIG1 = 23
+#ECHO1 = 24
+#TRIG2 = 20
+#ECHO2 = 21
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(TRIG1, GPIO.OUT)
