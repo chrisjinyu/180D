@@ -1,13 +1,14 @@
 import RPi.GPIO as GPIO
 import time
 
+SLEEPTIME = 0.1
 #trig's must be seperate
 TRIG1 = 4
-TRIG2 = 2
+#TRIG2 = 2
 
 #echo's can be shared??
 ECHO1 = 14
-ECHO2 = 3
+#ECHO2 = 3
 
 #TRIG1 = 23
 #ECHO1 = 24
@@ -17,14 +18,14 @@ ECHO2 = 3
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(TRIG1, GPIO.OUT)
 GPIO.setup(ECHO1, GPIO.IN)
-GPIO.setup(TRIG2, GPIO.OUT)
-GPIO.setup(ECHO2, GPIO.IN)
+#GPIO.setup(TRIG2, GPIO.OUT)
+#GPIO.setup(ECHO2, GPIO.IN)
 
 def getDist(trig, echo, name):
 	GPIO.output(trig, False)
 	
 	#print "Waiting for sensor to settle"
-	time.sleep(0.15)
+	time.sleep(SLEEPTIME)
 	GPIO.output(trig, True)           #sending pulse that will bounce off object to be measured
 	time.sleep(0.00001)
 #        time.sleep(0.001)
@@ -38,12 +39,17 @@ def getDist(trig, echo, name):
 	pulse_duration = pulse_end - pulse_start
 	distance = pulse_duration * 17150
 	inchDist = distance/2.54
+	return inchDist
 #	print ("Distance for sensor %s: %.2f cm\t %.2f in\t %.2f ft" %(name, distance, inchDist, inchDist/12))
-	print ("%s: %.2f ft" %(name, inchDist/12))
+#	print ("%s: %.2f ft" %(name, inchDist/12))
 try:
+	dist1 = getDist(TRIG1, ECHO1, "one")
 	while True:
-		getDist(TRIG1, ECHO1, "one")
-		getDist(TRIG2, ECHO1, "two")
+		tempDist = getDist(TRIG1, ECHO1, "one")
+		if(tempDist < 15*12):
+			dist1 = (0.2*tempDist+0.8*dist1)
+		print ("%.2f ft" %(dist1/12))
+
 except KeyboardInterrupt:
 	print("Cleaning up 2")
 	GPIO.cleanup()
