@@ -21,10 +21,15 @@ def changeLight(color):
     #change the light to red or green
     GPIO
 
+def getDist(player):
+    
+    
 
-
-
+changeLight(RED)
 while 1:
+    #change light red to green and back and measure dist of players
+    startPlayer1Dist = getDist(1)
+    startPlayer2Dist = getDist(2)
     
 
 

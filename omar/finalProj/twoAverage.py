@@ -3,10 +3,10 @@ import numpy as np
 import time
 
 SLEEPTIME = 0.1
-WINDOWSIZE = 5
+WINDOWSIZE = 20
 #trig's must be seperate
 TRIG1 = 4
-#TRIG2 = 2
+TRIG2 = 2
 
 #echo's can be shared??
 ECHO1 = 14
@@ -21,7 +21,7 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(TRIG1, GPIO.OUT)
 GPIO.setup(ECHO1, GPIO.IN)
-#GPIO.setup(TRIG2, GPIO.OUT)
+GPIO.setup(TRIG2, GPIO.OUT)
 #GPIO.setup(ECHO2, GPIO.IN)
 
 
@@ -59,6 +59,9 @@ try:
 #        print(running_mean([1,2,3], 1))
 	while True:
 		currDist = getDist(TRIG1, ECHO1, "one")
+		if(currDist < 20*12):
+			dist1.append(currDist)
+                currDist = getDist(TRIG2, ECHO1, "one")
 		if(currDist < 20*12):
 			dist1.append(currDist)
                 currLen = len(dist1)
