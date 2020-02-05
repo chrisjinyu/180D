@@ -24,7 +24,7 @@ def getDist(trig, echo, name):
 	GPIO.output(trig, False)
 	
 	#print "Waiting for sensor to settle"
-	time.sleep(0.15)
+	time.sleep(0.35)
 	GPIO.output(trig, True)           #sending pulse that will bounce off object to be measured
 	time.sleep(0.00001)
 #        time.sleep(0.001)
@@ -39,11 +39,14 @@ def getDist(trig, echo, name):
 	distance = pulse_duration * 17150
 	inchDist = distance/2.54
 #	print ("Distance for sensor %s: %.2f cm\t %.2f in\t %.2f ft" %(name, distance, inchDist, inchDist/12))
-	print ("%s: %.2f ft" %(name, inchDist/12))
+        return inchDist
+
+
 try:
 	while True:
-		getDist(TRIG1, ECHO1, "one")
-		getDist(TRIG2, ECHO1, "two")
+		one = getDist(TRIG1, ECHO1, "one")
+		two = getDist(TRIG2, ECHO1, "two")
+                print ("%i: %.2f ft  %i: %.2f ft" %(1, one/12, 2, two/12))
 except KeyboardInterrupt:
 	print("Cleaning up 2")
 	GPIO.cleanup()
