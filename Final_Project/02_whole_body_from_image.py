@@ -10,6 +10,8 @@ import time
 import numpy as np
 np.random.seed(1337)
 
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(dir_path + '/../../python/openpose/Release');
 os.environ['PATH']  = os.environ['PATH'] + ';' + dir_path + '/../../x64/Release;' +  dir_path + '/../../bin;'
 import pyopenpose as op
@@ -100,6 +102,3 @@ while cap.isOpened():
 # clean up after yourself
 cap.release()
 cv2.destroyAllWindows()  
-except Exception as e:
-    print(e)
-    sys.exit(-1)
