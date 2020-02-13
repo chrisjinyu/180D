@@ -1,4 +1,7 @@
-#import speech_recognition as sr
+### make so pings sensors in background and doesnt wait constantly for server's comms
+### make comms independent of game
+
+
 import RPi.GPIO as GPIO
 import numpy as np
 import time
@@ -37,15 +40,15 @@ def running_mean(x, N):
 	return (cumsum[N:] - cumsum[:-N]) / float(N)
 
 def getDistHelper(trig, echo):
-	GPIO.output(trig, False)
-	time.sleep(SLEEPTIME)
+	#GPIO.output(trig, False)
+	#time.sleep(SLEEPTIME)
 	GPIO.output(trig, True)           #sending pulse that will bounce off object to be measured
 	time.sleep(0.00001)
 	GPIO.output(trig, False)
 
-	while GPIO.input(echo)==0:        #timing how long sound wave takes to return
+	while GPIO.input(echo) == 0:        #timing how long sound wave takes to return
 		pulse_start = time.time()
-	while GPIO.input(echo)==1:
+	while GPIO.input(echo) == 1:
 		pulse_end = time.time()
 
 	pulse_duration = pulse_end - pulse_start
@@ -63,8 +66,8 @@ def getDist():
 		mean1 = running_mean(player1dists[currLen-MEANWINDOWSIZE:currLen], MEANWINDOWSIZE)
 		if (len(mean1) != 0): 
 			Dist1 = mean1[0]
-			print("Dist1 : " + str(Dist1))
-		else: print("len mean 1 is 0")
+		#	print("Dist1 : " + str(Dist1))
+		#else: print("len mean 1 is 0")
 		
 		Dist2 = 0
 		currDist = getDistHelper(TRIG2, ECHO)
@@ -74,8 +77,8 @@ def getDist():
 		mean2 = running_mean(player2dists[currLen-MEANWINDOWSIZE:currLen], MEANWINDOWSIZE)
 		if (len(mean2) != 0): 
 			Dist2 = mean2[0]
-			print("Dist2: " + str(Dist2))
-		else: print("len mean 2 is 0")
+		#	print("Dist2: " + str(Dist2))
+		#else: print("len mean 2 is 0")
 	
 	#if(len(mean1) != 0 && len(mean2) != 0):
 	#	break
@@ -105,24 +108,31 @@ if __name__ == "__main__":
 #		from_server = client.recv(4096).decode()
 		#print(from_server)
 		while 1:
+			#print("d")
 			dataToSend = getDist()
 #			print("dist1: %d\t dist2: %d" %(Dist1, Dist2))
 #			dataToSend = str(Dist1) + ',' + str(Dist2)
-			print(dataToSend)
+			#print("e")
+			#print(dataToSend)
+			#print("f")
 			client.send(dataToSend.encode())
 			
-			
+			#print("a")
 			dataRec = client.recv(4096).decode()
+			#print("b")
+			#print(dataRec)
 			if dataRec:  #server should send RED, GREEN, WARNING, FAULT, etc.
 				changeLight(int(dataRec))
+			#print("c")
 		
 	except KeyboardInterrupt:
 		print("\nCleaning up\n")
+	except BrokenPipeError:
+		print("\nBroken Pipe!\n")
+	finally:
 		pixels.fill((0,0,0))
 		GPIO.cleanup()
 		client.close()
-
-	
 #	changeLight(RED)
 #	while 1:
 		#change light red to green and back and measure dist of players
