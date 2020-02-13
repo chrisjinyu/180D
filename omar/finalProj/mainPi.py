@@ -12,7 +12,7 @@ import socket
 IP_ADDRESS = '192.168.137.1' #'0.0.0.0' or ''
 
 SLEEPTIME = 0.001  #time for dist to wait - maybe set to 0??
-MEANWINDOWSIZE = 5  #size of running average window - relate to sleeptime
+MEANWINDOWSIZE = 10  #size of running average window - relate to sleeptime
 
 RED = 0 #red light output
 GREEN = 1 # green light output
@@ -55,7 +55,7 @@ def getDistHelper(trig, echo):
 	#		break;
 	#	pass
 	#pulse_end = time.time()
-	temp = time.time()
+	pulse_start = temp = time.time()
 	while GPIO.input(echo) == 0:        #timing how long sound wave takes to return
 		pulse_start = time.time()
 		if(pulse_start - temp > 1):
@@ -132,13 +132,11 @@ if __name__ == "__main__":
 			#print("f")
 			client.send(dataToSend.encode())
 			
-			#print("c")
-			dataRec = client.recv(4096).decode()
-			#print("d")
-			#print(dataRec)
+			##change to not wait for data to come in
+			dataRec = client.recv(4096).decode() 
+
 			if dataRec:  #server should send RED, GREEN, WARNING, FAULT, etc.
 				changeLight(int(dataRec))
-			#print("c")
 		
 	except KeyboardInterrupt:
 		print("\nCleaning up\n")

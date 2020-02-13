@@ -1,26 +1,31 @@
 import  speech_recognition  as  sr
 
+P1_INDEX = 1
+P2_INDEX = 5
+
+
+
 r1 = sr.Recognizer()
- 
-def listen(index):
+
+def listen(player):
     try:
-        if (index == 2):
-            print('bose')
+        if (player == 1):
+            #print('bose')
             r1 = sr.Recognizer()
-            with  sr.Microphone(device_index=2)  as source:
-                print('speak mic 2')
+            with  sr.Microphone(device_index=P1_INDEX)  as source:
                 r1.adjust_for_ambient_noise(source)
+                print('Player one speak')
                 audio = r1.listen(source)
                 print('processing...')
                 get = r1.recognize_google(audio)
                 print(get)
          
-        elif (index == 3):
-            print('v8')
+        elif (player == 2):
+            #print('v8')
             r1 = sr.Recognizer()
-            with  sr.Microphone(device_index=3) as source:
-                print('speak mic 3')
+            with  sr.Microphone(device_index=P2_INDEX) as source:
                 r1.adjust_for_ambient_noise(source)
+                print('Player two speak')
                 audio = r1.listen(source)
                 print('processing...') 
                 get = r1.recognize_google(audio)
@@ -31,6 +36,5 @@ def listen(index):
     except  sr.RequestError  as e:
         print('failed'.format(e))
  
- 
+listen(1)
 listen(2)
-listen(3)
