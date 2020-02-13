@@ -26,8 +26,8 @@ GPIO.setup(ECHO1, GPIO.IN)
 
 
 def running_mean(x, N):
-        cumsum = np.cumsum(np.insert(x, 0, 0))
-        return (cumsum[N:] - cumsum[:-N]) / float(N)
+	cumsum = np.cumsum(np.insert(x, 0, 0))
+	return (cumsum[N:] - cumsum[:-N]) / float(N)
 
 
 def getDist(trig, echo, name):
@@ -55,17 +55,17 @@ def getDist(trig, echo, name):
 
 try:
 	dist1 = []
-        dist1.append(0)
+	dist1.append(0)
 #        print(running_mean([1,2,3], 1))
 	while True:
 		currDist = getDist(TRIG1, ECHO1, "one")
 		if(currDist < 20*12):
 			dist1.append(currDist)
-                currLen = len(dist1)
-                mean = running_mean(dist1[currLen-WINDOWSIZE:currLen], WINDOWSIZE)
+			currLen = len(dist1)
+			mean = running_mean(dist1[currLen-WINDOWSIZE:currLen], WINDOWSIZE)
 #                print(mean/12)
-                if (len(mean) != 0):
-                        print ("%.2f ft" %(mean[0]/12))
+			if (len(mean) != 0):
+				print ("%.2f ft" %(mean[0]/12))
 
 except KeyboardInterrupt:
 	print("Cleaning up 2")

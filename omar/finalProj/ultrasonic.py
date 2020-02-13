@@ -6,7 +6,7 @@ TRIG1 = 4
 TRIG2 = 2
 
 #echo's can be shared??
-ECHO1 = 14
+ECHO1 = 3
 ECHO2 = 3
 
 #TRIG1 = 23
@@ -39,14 +39,14 @@ def getDist(trig, echo, name):
 	distance = pulse_duration * 17150
 	inchDist = distance/2.54
 #	print ("Distance for sensor %s: %.2f cm\t %.2f in\t %.2f ft" %(name, distance, inchDist, inchDist/12))
-        return inchDist
+	return inchDist
 
 
 try:
 	while True:
 		one = getDist(TRIG1, ECHO1, "one")
 		two = getDist(TRIG2, ECHO1, "two")
-                print ("%i: %.2f ft  %i: %.2f ft" %(1, one/12, 2, two/12))
+		print ("%i: %.2f ft  %i: %.2f ft" %(1, one/12, 2, two/12))
 except KeyboardInterrupt:
 	print("Cleaning up 2")
 	GPIO.cleanup()
