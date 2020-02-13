@@ -9,7 +9,9 @@ import board
 import neopixel
 import socket 
 
-SLEEPTIME = 0.1  #time for dist to wait - maybe set to 0??
+IP_ADDRESS = '192.168.137.1' #'0.0.0.0' or ''
+
+SLEEPTIME = 0.001  #time for dist to wait - maybe set to 0??
 MEANWINDOWSIZE = 5  #size of running average window - relate to sleeptime
 
 RED = 0 #red light output
@@ -40,17 +42,30 @@ def running_mean(x, N):
 	return (cumsum[N:] - cumsum[:-N]) / float(N)
 
 def getDistHelper(trig, echo):
-	#GPIO.output(trig, False)
-	#time.sleep(SLEEPTIME)
+	GPIO.output(trig, False)
+	time.sleep(SLEEPTIME)
 	GPIO.output(trig, True)           #sending pulse that will bounce off object to be measured
 	time.sleep(0.00001)
 	GPIO.output(trig, False)
 
+	#while GPIO.input(echo) == 0:        #timing how long sound wave takes to return
+	#pulse_start = time.time()
+	#while GPIO.input(echo) == 0:
+	#	if ((time.time() - pulse_start) > 0.5):
+	#		break;
+	#	pass
+	#pulse_end = time.time()
+	temp = time.time()
 	while GPIO.input(echo) == 0:        #timing how long sound wave takes to return
 		pulse_start = time.time()
+		if(pulse_start - temp > 1):
+			break
+	pulse_end = time.time()
 	while GPIO.input(echo) == 1:
 		pulse_end = time.time()
-
+		if(pulse_end - pulse_start > 1):
+			break
+	
 	pulse_duration = pulse_end - pulse_start
 	distance = pulse_duration * 17150
 	inchDist = distance/2.54
@@ -103,23 +118,23 @@ if __name__ == "__main__":
 	#print "Executed when invoked directly"
 	try:
 		client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		client.connect(('192.168.1.8', 808))
+		client.connect((IP_ADDRESS, 808))
 		#client.send("I AM CLIENT\n".encode())
 #		from_server = client.recv(4096).decode()
 		#print(from_server)
 		while 1:
-			#print("d")
+			#print("a")
 			dataToSend = getDist()
 #			print("dist1: %d\t dist2: %d" %(Dist1, Dist2))
 #			dataToSend = str(Dist1) + ',' + str(Dist2)
-			#print("e")
+			#print("b")
 			#print(dataToSend)
 			#print("f")
 			client.send(dataToSend.encode())
 			
-			#print("a")
+			#print("c")
 			dataRec = client.recv(4096).decode()
-			#print("b")
+			#print("d")
 			#print(dataRec)
 			if dataRec:  #server should send RED, GREEN, WARNING, FAULT, etc.
 				changeLight(int(dataRec))
