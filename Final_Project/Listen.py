@@ -36,5 +36,3 @@ def listen(player):
     except  sr.RequestError  as e:
         print('failed'.format(e))
  
-listen(1)
-listen(2)
