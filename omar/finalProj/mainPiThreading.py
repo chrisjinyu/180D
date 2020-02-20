@@ -8,10 +8,11 @@ import time
 import board
 import neopixel
 import socket 
+import threading
 
 IP_ADDRESS = '192.168.1.8'  #'192.168.137.1' #'0.0.0.0' or ''
 
-SLEEPTIME = 0.001  #time for dist to wait - maybe set to 0??
+SLEEPTIME = 0.05  #time for dist to wait - maybe set to 0??
 MEANWINDOWSIZE = 10  #size of running average window - relate to sleeptime
 
 RED = 0 #red light output
@@ -31,11 +32,11 @@ GPIO.setup(TRIG2, GPIO.OUT)
 
 pixels = neopixel.NeoPixel(board.D18, 12)
 player1dists = []
-player1dists.append(0)
-Dist1 = 0
+player1dists.append(0.0)
+Dist1 = 0.0
 player2dists = []
-player2dists.append(0)
-Dist2 = 0
+player2dists.append(0.0)
+Dist2 = 0.0
 
 def running_mean(x, N):
 	cumsum = np.cumsum(np.insert(x, 0, 0))
@@ -72,8 +73,10 @@ def getDistHelper(trig, echo):
 	return inchDist
 
 def getDist():
-	#while True:	
-		Dist1 = 0
+	while True:	
+		#Dist1 = 0
+		global Dist1
+		global Dist2
 		currDist = getDistHelper(TRIG1, ECHO) 
 		if(currDist < 20*12):
 			player1dists.append(round(currDist, 2))
@@ -81,10 +84,10 @@ def getDist():
 		mean1 = running_mean(player1dists[currLen-MEANWINDOWSIZE:currLen], MEANWINDOWSIZE)
 		if (len(mean1) != 0): 
 			Dist1 = round(mean1[0], 2)
-		#	print("Dist1 : " + str(Dist1))
+			#print("Dist1 : " + str(Dist1))
 		#else: print("len mean 1 is 0")
 		
-		Dist2 = 0
+		#Dist2 = 0
 		currDist = getDistHelper(TRIG2, ECHO)
 		if(currDist < 20*12):
 			player2dists.append(currDist)
@@ -92,12 +95,12 @@ def getDist():
 		mean2 = running_mean(player2dists[currLen-MEANWINDOWSIZE:currLen], MEANWINDOWSIZE)
 		if (len(mean2) != 0): 
 			Dist2 = round(mean2[0],2)
-		#	print("Dist2: " + str(Dist2))
+			#print("Dist2: " + str(Dist2))
 		#else: print("len mean 2 is 0")
 	
 	#if(len(mean1) != 0 && len(mean2) != 0):
 	#	break
-		return (str(Dist1) + ',' +  str(Dist2))
+		#return (str(Dist1) + ',' +  str(Dist2))
 	
 def changeLight(color): # maybe add winning/resetting sequence(s)
 	#change the light to red or green
@@ -113,31 +116,34 @@ def changeLight(color): # maybe add winning/resetting sequence(s)
 		print("invalid input to changeLight!\n")
 		
 	
-	
+if __name__ == "_main__": 
+	x = threading.Thread(target = getDist, daemon = True)
+	x.start()
+	while 1:
+		print("dist1: %f\t dist2: %f" %(Dist1, Dist2))
+		time.sleep(0.05)
+		
+
 if __name__ == "__main__": 
 	#print "Executed when invoked directly"
 	try:
 		client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		client.connect((IP_ADDRESS, 808))
-		#client.send("I AM CLIENT\n".encode())
-#		from_server = client.recv(4096).decode()
-		#print(from_server)
+		
+		
+		x = threading.Thread(target = getDist, daemon = True)
+		x.start() #x is constantly using ultrasonic sensors and getting running average in background
+	
 		while 1:
-			#print("a")
-			dataToSend = getDist()
-#			print("dist1: %d\t dist2: %d" %(Dist1, Dist2))
-#			dataToSend = str(Dist1) + ',' + str(Dist2)
-			#print("b")
-			#print(dataToSend)
-			#print("f")
-			client.send(dataToSend.encode())
-			
-			##change to not wait for data to come in
 			dataRec = int(client.recv(4096).decode()) 
 
 			if (dataRec != -1):  #server should send RED, GREEN, WARNING, FAULT, etc.
 				changeLight(dataRec)
 		
+			dataToSend = str(Dist1) + ',' +  str(Dist2)
+			client.send(dataToSend.encode())
+			
+			
 	except KeyboardInterrupt:
 		print("\nCleaning up\n")
 	except BrokenPipeError:
