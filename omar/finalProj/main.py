@@ -12,7 +12,7 @@ RAND_LOW = 1
 RAND_HIGH = 2
 FORGIVE_TIME = 0.25 #time after light goes red to forgive movement
 FORGIVE_DIST = 4 #inches players can move when not allowed to move without penalty
-
+WIN_DIST = 12 #inches away from ultrasonic sensors that is considered the finish line
 
 RED = 0#.encode() #red light output
 GREEN = 1#.encode() # green light output
@@ -32,6 +32,9 @@ Answers = { # store as strings?
 }
 
 
+def recogGesture():
+	return True
+
 def chooseQuestion():
 	num = random.randrange(1, len(Questions)+1)
 	return (Questions[num], num)
@@ -44,7 +47,6 @@ def getDists(ColorToSend = -1):
 	dataRec = conn.recv(4096).decode()
 	distances = dataRec.split(',') #1st elem is p1 dist and 2nd is p2 dist
 	return distances
-
 
 def moveBackToStart(playerNum):
 	global initDists
@@ -81,8 +83,7 @@ def checkDists(currDists): # , initDists):  #curr is where they should be and in
 		print("Player 2 moving while light is red!")
 		print("Player 2 go back to the beginning")
 		moveBackToStart(2)
-		
-		
+				
 def getRandTime():
 	return random.uniform(RAND_LOW, RAND_HIGH)
 
@@ -105,8 +106,20 @@ def administerQuestion(playerNum): #playerNum is 1 or 2
 		print("answer incorrect!")
 		return False
 
-		
-
+def checkAndAdminGesture(playerNum):
+	distances = getDists()
+	playerIndex = playerNum - 1
+	if float(distances[playerIndex]) < WIN_DIST:
+			print("Player %d move to the center area and get ready to perform a gesture" % (playerNum))
+			time.sleep(5)
+			if recogGesture():
+				print("\nCongratulations Player %d! You win!\n" % (playerNum))
+				time.sleep(5)
+				sys.exit()
+			else:
+				print("Gesture recognition failed. Return to the start line")
+				moveBackToStart(playerNum)
+	
 if __name__ == "_main__": 
 	serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	serv.bind(('', 808)) #192.168.43.65 #0.0.0.0.0
@@ -178,6 +191,8 @@ if __name__ == "__main__":
 			getDists(RED)
 			time.sleep(FORGIVE_TIME) 
 			redDists = getDists(RED)
+			checkAndAdminGesture(1)
+			checkAndAdminGesture(2)
 			checkDists(redDists)
 			#time.sleep(getRandTime())
 			administerQuestion(1)
@@ -186,6 +201,7 @@ if __name__ == "__main__":
 			administerQuestion(2)
 			
 			checkDists(redDists)
+			
 			
 			#getDists()
 			#p1Dist = distances[0]
@@ -197,7 +213,8 @@ if __name__ == "__main__":
 
 
 
-
+	except SystemExit:
+		print("\nGame over. Cleaning up...\n")
 	except KeyboardInterrupt:
 		print("\nKeyboard Interrupt!\nCleaning up\n")
 	except ConnectionAbortedError:
