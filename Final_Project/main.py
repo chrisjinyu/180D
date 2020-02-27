@@ -1,9 +1,15 @@
+from playsound import playsound
 import speech_recognition as sr
 import socket
 import sys
 import random
 import time
 import Listen
+
+
+WRONG_ANSWER = "files/buzzer.wav"
+CORRECT_ANSWER = "files/clang.mp3"
+GAME_WIN = "files/TaDa.mp3"
 
 #P1MIC_INDEX = 1 ##calibrate for computer !!!
 #P2MIC_INDEX = 2 
@@ -101,9 +107,11 @@ def administerQuestion(playerNum): #playerNum is 1 or 2
 	
 	if Answers[QnA[1]] in audio.lower():
 		print ("answer correct!")
+		playsound(CORRECT_ANSWER)
 		return True
 	else: ##add ability to relisten when audio deciphered but doesn't contain  
 		print("answer incorrect!")
+		playsound(WRONG_ANSWER)
 		return False
 
 def checkAndAdminGesture(playerNum):
@@ -114,6 +122,7 @@ def checkAndAdminGesture(playerNum):
 			time.sleep(5)
 			if recogGesture():
 				print("\nCongratulations Player %d! You win!\n" % (playerNum))
+				playsound(TaDa)
 				time.sleep(5)
 				sys.exit()
 			else:
