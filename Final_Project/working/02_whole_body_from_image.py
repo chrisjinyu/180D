@@ -1,18 +1,22 @@
+# From Python
+# It requires OpenCV installed for Python
+from imutils import translate, rotate, resize
 from playsound import playsound
 import speech_recognition as sr
+from sys import platform
+import numpy as np
 import socket
-import sys
 import random
-import time
 import Listen
-
+import keras
+import time
+import sys
+import cv2
+import os
 
 WRONG_ANSWER = "files/buzzer.wav"
 CORRECT_ANSWER = "files/clang.mp3"
 GAME_WIN = "files/TaDa.mp3"
-
-#P1MIC_INDEX = 1 ##calibrate for computer !!!
-#P2MIC_INDEX = 2 
 
 RAND_LOW = 1
 RAND_HIGH = 2
@@ -24,6 +28,10 @@ RED = 0#.encode() #red light output
 GREEN = 1#.encode() # green light output
 WARNING = 2#.encode() #warning for when getting close to moving too much
 FAULT = 3#.encode() #when player has moved too much and must go back
+
+DAB = 1
+TPOSE = 2
+OTHER = 0
 
 Questions = {
 1: "True or False:\nAbraham Lincoln was the first president of the United States.",
@@ -37,9 +45,6 @@ Answers = { # store as strings?
 3: "charlie"
 }
 
-
-def recogGesture():
-	return True
 
 def chooseQuestion():
 	num = random.randrange(1, len(Questions)+1)
@@ -120,36 +125,109 @@ def checkAndAdminGesture(playerNum):
 	if float(distances[playerIndex]) < WIN_DIST:
 			print("Player %d move to the center area and get ready to perform a gesture" % (playerNum))
 			time.sleep(5)
-			if recogGesture():
+			sys.stdout = open(os.devnull, "w")
+			sys.stderr = open(os.devnull, "w")
+            print("test123")
+			if recogGesture(2):
+				sys.stdout = sys.__stdout__
+				sys.stderr = sys.__stderr__
 				print("\nCongratulations Player %d! You win!\n" % (playerNum))
 				playsound(GAME_WIN)
 				time.sleep(5)
 				sys.exit()
 			else:
+				sys.stdout = sys.__stdout__
+				sys.stderr = sys.__stderr__
 				print("Gesture recognition failed. Return to the start line")
 				moveBackToStart(playerNum)
+
+def recogGesture(gestureNum):
+	np.random.seed(1337)
+	dir_path = os.path.dirname(os.path.realpath(__file__))
+	sys.path.append(dir_path + '/../../python/openpose/Release');
+	os.environ['PATH']  = os.environ['PATH'] + ';' + dir_path + '/../../x64/Release;' +  dir_path + '/../../bin;'
+	import pyopenpose as op
+	# Custom Params (refer to include/openpose/flags.hpp for more parameters)
+	params = dict()
+	params["model_folder"] = "../../../models/"
+
+	print("OpenPose start")
+	cap = cv2.VideoCapture(0)
+	cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+	cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
+	tposer = keras.models.load_model('dab-tpose-other.h5')
+
+	# Construct it from system arguments
+	# op.init_argv(args[1])
+	# oppython = op.OpenposePython()
+
+	# Starting OpenPose
+	opWrapper = op.WrapperPython()
+	opWrapper.configure(params)
+	opWrapper.start()
+
+	# Process Image
+	datum = op.Datum()
+
+	np.set_printoptions(precision=4)
+
+	fps_time = 0
+
+	bounced = time.time()
+	debounce = 3 # wait 3 seconds before allowing another command
+	while cap.isOpened():
+		ret_val, frame = cap.read()
+
+		datum.cvInputData = frame
+		opWrapper.emplaceAndPop([datum])
+
+		# need to be able to see what's going on
+		image = datum.cvOutputData
+		cv2.putText(image,
+				   "FPS: %f" % (1.0 / (time.time() - fps_time)),
+					(10, 20),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+					(0, 255, 0), 2)
+		
+		cv2.imshow("Openpose", image)
+
+		if datum.poseKeypoints.any():
+			first_input = datum.poseKeypoints
+			try:
+				first_input[:,:,0] = first_input[:,:,0] / 720
+				first_input[:,:,1] = first_input[:,:,1] / 1280
+				first_input = first_input[:,:,1:]
+				first_input = first_input.reshape(len(datum.poseKeypoints), 50)
+			except:
+				continue
+
+			output = tposer.predict_classes(first_input)
+			for j in output:
+				if j == gestureNum:
+					if (time.time() - bounced) < debounce:
+						continue
+					print("gesture detected!")
+					return True
+					bounced = time.time()
+				#else: return False
+				#elif j == 2:
+				#	if (time.time() - bounced) < debounce:
+				#		continue				   
+				#	print("tpose detected")
+				#	bounced = time.time()
+					
+		fps_time = time.time()
+		
+		# quit with a q keypress, b or m to save data
+		key = cv2.waitKey(1) & 0xFF
+		if key == ord("q"):
+			break
+
+	# clean up after yourself
+	cap.release()
+	cv2.destroyAllWindows()  
 	
-if __name__ == "_main__": 
-	serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	serv.bind(('', 808)) #192.168.43.65 #0.0.0.0.0
-	serv.listen(5)
-	conn, addr = serv.accept() ##not sure about positioning - in or out of loop
 	
-	try:
-		while 1:
-			distances = getDists(RED)
-			print("p1: " + str(distances[0]) + "    p2: " + str(distances[1]))
-	except KeyboardInterrupt:
-		print("\nKeyboard Interrupt!\nCleaning up\n")
-	except ConnectionAbortedError:
-		print("Connection Aborted by Client")
-	except ConnectionResetError:
-		print("Connection Reset by Client")
-	finally:
-		conn.close()
-		
-		
-		
 if __name__ == "__main__": 
 	if (len(Questions) != len(Answers)):
 		print("error! length of questions must equal length of answers\nExiting...")
@@ -232,35 +310,4 @@ if __name__ == "__main__":
 		print("Connection Reset by Client")
 	finally:
 		conn.close()
-	
-#	changeLight(RED)
-#	while 1:
-		#change light red to green and back and measure dist of players
-#		startPlayer1Dist = getDists(1)
-#		startPlayer2Dist = getDists(2)
-
-
-
-#else: 
-	#print "Executed when imported"
-'''
-		while 1:  #alternating red and green and printing dist data
-			distances = getDists(GREEN)
-			print(distances)
-#			time.sleep(getRandTime())
-			distances = getDists(RED)
-			print(distances)
-#			time.sleep(getRandTime()) 
-'''
-			
-			#getDists()
-			#print(distances)
-			#if(len(distances) == 2):
-			#	print("enter if")
-			#	checkDists(float(distances[0]), float(distances[1]))
-			#print("P1: %d \tP2: %d" % (distances[0], distances[1]))
-			
-
-
-
 	
