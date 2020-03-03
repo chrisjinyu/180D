@@ -25,17 +25,46 @@ GREEN = 1#.encode() # green light output
 WARNING = 2#.encode() #warning for when getting close to moving too much
 FAULT = 3#.encode() #when player has moved too much and must go back
 
+
+#Questions = {
+#1: "True or False:\nAbraham Lincoln was the first president of the United States.",
+#2: "True or False:\n4+4 equals 8",
+#3: "How many protons are in a gold atom?\nChoose one of the following options:\nAlpha: 64\t Beta: 69\t Charlie: 79\t Delta: 84"
+#}
+#Answers = { # store as strings?
+#1: "false",
+#2: "true",
+#3: "charlie"
+#}
+
 Questions = {
-1: "True or False:\nAbraham Lincoln was the first president of the United States.",
-2: "True or False:\n4+4 equals 8",
-3: "How many protons are in a gold atom?\nChoose one of the following options:\nAlpha: 64\t Beta: 69\t Charlie: 79\t Delta: 84"
+1: "When driving in fog, you should use your:\nAlpha:Fog lights only\t Beta:High beams\t Charlie:Low beams"
+2: "You just sold your vehicle. You must notify the DMV within how many days?\nAlpha:5\t Beta:10\t Charlie:15"
+3: "True or False:\nTo avoid last minute moves, you should be looking down the road to where your vehicle will be in about 5 to 10 seconds."
+4: "You have been involved in a minor traffic collision with a parked vehicle and you can't find the owner. You must:\nAlpha: Leave a note on the vehicle\t Beta: Report accident without delay to city police or CHP\t Charlie: Both \t Delta: neither"
+5: "Unless otherwise posted the speed limit in a residential area is:\nAlpha: 15mph\t Beta: 25mph\t Charlie: 35mph"
+6: "To turn left from a multilane one-way street into a one-way street, you should start your turn from: \nAlpha: Any lane(as long as it is safe)\t Beta: The lane closest to the left curb\t Charlie: The lane in the center of the road"
+7: "You may not park your vehicle:\nAlpha: On the side of the freeway in an emergency\t Beta: Next to a red painted curb\t Charlie: Within 100 feet of an elementary school"
+8: "Two sets of solid, double, yellow lines that are two or more feet apart:\nAlpha: May be crossed to enter or exit a private driveway\t Beta: May not be crossed for any reason\t Charlie: Should be treated as a seperate traffic lane"
+9: "It is illegal to park your vehicle:\nAlpha: In an unmarked crosswalk\t Beta: Within three feet of a private driveway\t Charlie: In a bicycle lane"
+10: "A solid yellow line next to a broken yellow line means that vehicles:\nAlpha: in both directions may pass\t Beta: Next to a broken line may pass\t Charlie: Next to the solid line may pass"
 }
 
-Answers = { # store as strings?
-1: "false",
-2: "true",
-3: "charlie"
+Answers={
+1:"charlie"
+2:"alpha"
+3:"false"
+4:"charlie"
+5:"Beta"
+6:"Beta"
+7:"Beta"
+8:"Beta"
+9:"Alpha"
+10:"Beta"
 }
+
+
+
 
 
 def recogGesture():
