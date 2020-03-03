@@ -10,7 +10,7 @@ import neopixel
 import socket 
 import threading
 
-IP_ADDRESS = '192.168.137.77'#'192.168.1.8'  #'192.168.137.1' #'0.0.0.0' or ''
+IP_ADDRESS = '192.168.137.1'#'192.168.1.8'  #'192.168.137.77' #'0.0.0.0' or ''
 
 SLEEPTIME = 0.05  #time for dist to wait - maybe set to 0??
 MEANWINDOWSIZE = 10  #size of running average window - relate to sleeptime
@@ -22,13 +22,15 @@ FAULT = 3 #when player has moved too much and must go back
 
 TRIG1 = 4
 TRIG2 = 2
-ECHO = 3
+ECHO1 = 3
+ECHO2 = 14
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(TRIG1, GPIO.OUT)
-GPIO.setup(ECHO, GPIO.IN)
+GPIO.setup(ECHO1, GPIO.IN)
 GPIO.setup(TRIG2, GPIO.OUT)
+GPIO.setup(ECHO2, GPIO.IN)
 
 pixels = neopixel.NeoPixel(board.D18, 12)
 player1dists = []
@@ -77,7 +79,7 @@ def getDist():
 		#Dist1 = 0
 		global Dist1
 		global Dist2
-		currDist = getDistHelper(TRIG1, ECHO) 
+		currDist = getDistHelper(TRIG1, ECHO1) 
 		if(currDist < 20*12):
 			player1dists.append(round(currDist, 2))
 		currLen = len(player1dists)
@@ -88,7 +90,7 @@ def getDist():
 		#else: print("len mean 1 is 0")
 		
 		#Dist2 = 0
-		currDist = getDistHelper(TRIG2, ECHO)
+		currDist = getDistHelper(TRIG2, ECHO2)
 		if(currDist < 20*12):
 			player2dists.append(currDist)
 		currLen = len(player2dists)
