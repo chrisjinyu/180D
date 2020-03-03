@@ -10,7 +10,7 @@ import neopixel
 import socket 
 import threading
 
-IP_ADDRESS = '192.168.137.1'#'192.168.1.8'  #'192.168.137.1' #'0.0.0.0' or ''
+IP_ADDRESS = '192.168.137.77'#'192.168.1.8'  #'192.168.137.1' #'0.0.0.0' or ''
 
 SLEEPTIME = 0.05  #time for dist to wait - maybe set to 0??
 MEANWINDOWSIZE = 10  #size of running average window - relate to sleeptime
