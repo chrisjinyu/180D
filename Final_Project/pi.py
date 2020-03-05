@@ -10,7 +10,8 @@ import neopixel
 import socket 
 import threading
 
-IP_ADDRESS = '192.168.137.1'#'192.168.1.8'  #'192.168.137.77' #'0.0.0.0' or ''
+IP_ADDRESS = '192.168.137.1' #'192.168.1.8'  #'192.168.137.77' #'0.0.0.0' or ''
+PORT = 4000
 
 SLEEPTIME = 0.05  #time for dist to wait - maybe set to 0??
 MEANWINDOWSIZE = 10  #size of running average window - relate to sleeptime
@@ -130,7 +131,7 @@ if __name__ == "__main__":
 	#print "Executed when invoked directly"
 	try:
 		client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		client.connect((IP_ADDRESS, 808))
+		client.connect((IP_ADDRESS, PORT))
 		
 		
 		x = threading.Thread(target = getDist, daemon = True)
