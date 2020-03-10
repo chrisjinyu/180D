@@ -13,6 +13,7 @@ import threading
 IP_ADDRESS = '192.168.137.1' #'192.168.1.8'  #'192.168.137.77' #'0.0.0.0' or ''
 PORT = 4000
 
+SENSOR_RESET_TIME = 0.25
 SLEEPTIME = 0.05  #time for dist to wait - maybe set to 0??
 MEANWINDOWSIZE = 10  #size of running average window - relate to sleeptime
 
@@ -22,8 +23,9 @@ WARNING = 2 #warning for when getting close to moving too much
 FAULT = 3 #when player has moved too much and must go back
 
 TRIG1 = 4
-TRIG2 = 2
 ECHO1 = 3
+
+TRIG2 = 2
 ECHO2 = 14
 
 GPIO.setwarnings(False)
@@ -62,12 +64,12 @@ def getDistHelper(trig, echo):
 	pulse_start = temp = time.time()
 	while GPIO.input(echo) == 0:        #timing how long sound wave takes to return
 		pulse_start = time.time()
-		if(pulse_start - temp > 1):
+		if(pulse_start - temp > SENSOR_RESET_TIME):
 			break
 	pulse_end = time.time()
 	while GPIO.input(echo) == 1:
 		pulse_end = time.time()
-		if(pulse_end - pulse_start > 1):
+		if(pulse_end - pulse_start > SENSOR_RESET_TIME):
 			break
 	
 	pulse_duration = pulse_end - pulse_start
