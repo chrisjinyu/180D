@@ -17,21 +17,19 @@ import os
 IP_ADDR = ''  #192.168.43.65 #0.0.0.0.0
 PORT = 4000
 
-
 WRONG_ANSWER = "files/buzzer.wav"
 CORRECT_ANSWER = "files/clang.mp3"
 GAME_WIN = "files/TaDa.mp3"
 
 RAND_LOW = 0
 RAND_HIGH = 1
-FORGIVE_TIME = 0 #0.75 #time after light goes red to forgive movement
+FORGIVE_TIME = 0.75 #0.75 #time after light goes red to forgive movement
 FORGIVE_DIST = 10 #inches players can move when not allowed to move without penalty
 WIN_DIST = 12 #inches away from ultrasonic sensors that is considered the finish line
 QUESTION_READ_TIME = 5
 INTERMESSAGE_TIME = 3
 INTER_RETREAT_TIME = 3
 NUM_UNRECOGNIZED_TRIES = 3
-
 
 RED = 0#.encode() #red light output
 GREEN = 1#.encode() # green light output
@@ -41,7 +39,6 @@ FAULT = 3#.encode() #when player has moved too much and must go back
 DAB = 1
 TPOSE = 2
 OTHER = 0
-
 
 Questions = {
 	1: "What gets wet while drying? Hint: Mostly in bathrooms.",
@@ -110,7 +107,11 @@ Answers={
 '''
 
 def chooseQuestion():
-	num = random.randrange(1, len(Questions)+1)
+	global previous_question
+	num = previous_question
+	while num == previous_question:
+		num = random.randrange(1, len(Questions)+1)
+	previous_question = num
 	return (Questions[num], num)
 
 def listen(playerNum):
@@ -125,7 +126,12 @@ def getDists(ColorToSend = -1):
 	distances = dataRec.split(',') #1st elem is p1 dist and 2nd is p2 dist
 	return distances
 
-def moveBackToStart(playerNum):
+def moveBackToStart(playerNum):  #removed implementation where it forces them to go back specific distance in favor of just telling them to go back to the start line
+	print("Player %d move back to the start line!" % (playerNum))
+	time.sleep(INTER_RETREAT_TIME)
+	print("Resuming play shortly...")
+	time.sleep(INTER_RETREAT_TIME)
+	'''
 	global initDists
 	playerIndex = playerNum - 1
 	distances = getDists()
@@ -139,8 +145,15 @@ def moveBackToStart(playerNum):
 		gap = float(initDists[playerIndex])-float(distances[playerIndex])
 	print("Resuming play shortly...")
 	time.sleep(INTER_RETREAT_TIME)
-		
-def moveBackDist(playerNum, Dist, OrigDist = -1):  #if origdist is defined, move Dist back from there else move Dist back from current position
+	'''	
+	
+def moveBackDist(playerNum, Dist, OrigDist = -1):  #removed implementation where it forces them to go back specific distance in favor of just telling them to take a step back
+	print("Player %d move back 2 feet (1 tile)" % (playerNum))
+	time.sleep(INTER_RETREAT_TIME)
+	print("Resuming play shortly...")
+	time.sleep(INTER_RETREAT_TIME)
+	'''
+	#if origdist is defined, move Dist back from there else move Dist back from current position
 	global initDists
 	playerIndex = playerNum - 1
 	distances = getDists()
@@ -166,6 +179,7 @@ def moveBackDist(playerNum, Dist, OrigDist = -1):  #if origdist is defined, move
 		gap = targetDist - float(distances[playerIndex])
 	print("Resuming play shortly...")
 	time.sleep(INTER_RETREAT_TIME)
+	'''
 	
 def checkDists(desiredDists): # , initDists):  #desired is where they should be 
 	p1 = float(desiredDists[0])
@@ -179,7 +193,9 @@ def checkDists(desiredDists): # , initDists):  #desired is where they should be
 	if (diff1 > FORGIVE_DIST):
 		print("Player 1 moving while I am speaking!")
 		#PRINT BELOW LINE IN ITALICS IF POSS TO SIGNIFY A 'NARRATOR'
-		print("The Sphinx attacks player 1 and moves them a foot behind where they were before their question began")
+		#print("The Sphinx attacks player 1 and moves them a foot behind where they were before their question began")
+		print("The Sphinx attacks player 1 and moves them 2 feet back")
+			
 		#print("Player 1 go back to the beginning")
 		#moveBackToStart(1)
 		moveBackDist(1, 12, p1)
@@ -189,12 +205,12 @@ def checkDists(desiredDists): # , initDists):  #desired is where they should be
 	if (diff2 > FORGIVE_DIST):
 		print("Player 2 moving while I am speaking!")
 		#PRINT BELOW LINE IN ITALICS IF POSS TO SIGNIFY A 'NARRATOR'
-		print("The Sphinx attacks player 2 and moves them a foot behind where they were before their question began")
+		#print("The Sphinx attacks player 2 and moves them a foot behind where they were before their question began")
+		print("The Sphinx attacks player 2 and moves them 2 feet back")
 		#print("Player 2 go back to the beginning")
 		#moveBackToStart(2)
 		moveBackDist(2, 12, p2)
 				
-
 def administerQuestion(playerNum): #playerNum is 1 or 2
 	QnA = chooseQuestion() #QnA is a tuple of the question and the question number
 	print("I have a riddle for player %d:" % (playerNum))
@@ -209,7 +225,7 @@ def administerQuestion(playerNum): #playerNum is 1 or 2
 		times_null += 1
 		if times_null == NUM_UNRECOGNIZED_TRIES:
 			print("Speak clearly next try")
-			print("The Sphinx attacks player %d and this pushes them one foot back" % (playerNum))
+			print("The Sphinx attacks player %d and this pushes them 2 feet back" % (playerNum))
 			moveBackDist(playerNum, 12)
 			return False
 	#if Answers[QnA[1]] == "true":
@@ -222,7 +238,7 @@ def administerQuestion(playerNum): #playerNum is 1 or 2
 	else: ##add ability to relisten when audio deciphered but doesn't contain  
 		print("That is incorrect")
 		playsound(WRONG_ANSWER)
-		print("The Sphinx attacks player %d and this pushes them 1 foot back" % (playerNum))
+		print("The Sphinx attacks player %d and this pushes them 2 feet back" % (playerNum))
 		moveBackDist(playerNum, 12)
 		return False
 
@@ -240,7 +256,6 @@ def checkAndAdminGesture(playerNum):
 				print("You are unworthy! Return to the beginning to try again")
 				#Gesture recognition failed. Return to the start line")
 				moveBackToStart(playerNum)
-
 
 def recogGesture(gestureNum):
 	np.random.seed(1337)
@@ -328,7 +343,6 @@ def recogGesture(gestureNum):
 	cap.release()
 	cv2.destroyAllWindows()  
 	
-	
 if __name__ == "__main__": 
 	if (len(Questions) != len(Answers)):
 		print("error! length of questions must equal length of answers\nExiting...")
@@ -338,13 +352,13 @@ if __name__ == "__main__":
 	serv.bind((IP_ADDR, PORT)) 
 	serv.listen(5)
 	conn, addr = serv.accept() ##not sure about positioning - in or out of loop
+	previous_question = -1
 	
 	try:
 		##wait for distances to not be zero
 		distances = getDists()
 		while( float(distances[0]) == 0 or float(distances[1]) == 0): 
 			distances = getDists()
-		
 		distances = getDists()
 		
 		print("You two were part of a large group of adventurers")
@@ -375,16 +389,14 @@ if __name__ == "__main__":
 		print("Arrange yourselves to be equally far from me")
 		time.sleep(INTERMESSAGE_TIME)
 		while (abs(float(distances[0])-float(distances[1])) >  FORGIVE_DIST):
-			print("I SAID arrange yourselves to be equally far from me")
+			print("Arrange yourselves to be equally far from me")
 			time.sleep(1)
 			distances = getDists()
 		initDists = getDists()  ## move location of init dists?
 		#time.sleep(INTERMESSAGE_TIME)
 		print("Prepare yourselves, only one shall succeed....")
 		time.sleep(INTERMESSAGE_TIME)
-		
-
-		
+				
 		while 1:  #main game loop
 			getDists(GREEN)
 			time.sleep(getRandTime())
@@ -396,52 +408,11 @@ if __name__ == "__main__":
 			checkAndAdminGesture(2)
 			
 			checkDists(redDists)
-			#time.sleep(getRandTime())
 			administerQuestion(1)
 			checkDists(redDists)
-			
-			administerQuestion(2)
-			
+			administerQuestion(2)	
 			checkDists(redDists)
 			
-			
-			#getDists()
-			#p1Dist = distances[0]
-			#p2Dist = distances[1]
-			#while 1:
-			#	checkDists(p1Dist, p2Dist)
-			#	ADMINISTER_QUESTION() ##how to check dist while in question method
-			#	checkDists
-		'''
-		print("")
-		time.sleep(INTERMESSAGE_TIME)
-		print("")
-		time.sleep(INTERMESSAGE_TIME)
-		print("")
-		time.sleep(INTERMESSAGE_TIME)
-		
-		print("Game beginning soon...")
-		time.sleep(INTERMESSAGE_TIME)
-		print("Move forward when the light is green and stop when it is red")
-		time.sleep(INTERMESSAGE_TIME)
-		print("If you move when the light is red, you must start over!")
-		time.sleep(INTERMESSAGE_TIME)
-		print("At red lights, there will be trivia question which player 1 and 2 will take turns to answer")
-		time.sleep(INTERMESSAGE_TIME)
-		print("Upong reaching the finish line, players must perform a certain pose to claim victory")
-		time.sleep(INTERMESSAGE_TIME)
-		print("\nGet ready, game beginning soon...")
-		time.sleep(4)
-		
-		
-		print("Players please arrange yourselves to be equidistant from the screen")
-		while (abs(float(distances[0])-float(distances[1])) >  FORGIVE_DIST):
-			print("Players please arrange yourselves to be equidistant from the screen")
-			time.sleep(1)
-			distances = getDists()
-		initDists = getDists()  ## move location of init dists?
-		'''
-
 
 	except SystemExit:
 		print("\nGame over. Cleaning up...\n")
